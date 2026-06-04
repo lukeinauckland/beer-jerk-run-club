@@ -1,0 +1,21 @@
+{
+  "enabled": false,
+  "rules": {
+    "target": 8,
+    "prize": "Prize at Small Gods",
+    "reset": "After 8 consecutive Mondays, the streak resets.",
+    "tracking": "Laminated paper and marker. Updated Tuesdays."
+  },
+  "runners": [
+    {
+      "name": "Raichel",
+      "count": 0,
+      "status": "active"
+    }
+  ],
+  "notes": [
+    "This file is an example only.",
+    "Do not publish dummy names.",
+    "When ready, copy this to streak-board.json, set enabled to true, and add real runner data."
+  ]
+}

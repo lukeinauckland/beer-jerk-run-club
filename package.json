@@ -1,0 +1,13 @@
+{
+  "name": "beer-jerk-run-club-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:file-preview": "npm run build && node scripts/build-file-preview.mjs",
+    "validate": "node scripts/validate.mjs",
+    "report": "node scripts/report.mjs",
+    "check": "npm run build && npm run validate && npm run report",
+    "preview": "node scripts/serve-preview.mjs"
+  }
+}

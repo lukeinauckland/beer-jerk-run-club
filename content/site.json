@@ -1,0 +1,210 @@
+{
+  "site": {
+    "name": "Beer Jerk Run Club",
+    "shortName": "BJRC",
+    "domain": "beerjerkrunclub.co.nz",
+    "url": "https://beerjerkrunclub.co.nz",
+    "language": "en-GB",
+    "locale": "en_NZ",
+    "title": "Beer Jerk Run Club Auckland | Free Social Running Club",
+    "description": "Beer Jerk Run Club is a free social running club in Auckland. We meet Mondays at Small Gods Taproom in Eden Terrace, Uptown, run 5km, then stay for a drink.",
+    "slogan": "People. Over. Pace.",
+    "founded": "2018"
+  },
+  "club": {
+    "oneLine": "A free social running club in Auckland with a big social side.",
+    "opening": "Beer Jerk Run Club is a free weekly social run in Auckland where everyone is welcome. We meet at Small Gods Taproom in Eden Terrace on Monday nights, run 5km, then stick around for a drink.",
+    "audience": "Beginner-friendly, all-levels, social runners, returning runners, and anyone who wants a friendly Monday running group in Auckland.",
+    "price": "Free. Just turn up.",
+    "pace": "Nobody cares how fast or how slow you are. Only that you have a good time and get your heart rate up. People. Over. Pace.",
+    "bagDropNote": "You can get changed at the Taproom and leave your gear safely there while we run.",
+    "newRunnerNote": "If you are new to running, have a word with one of the organisers and we can talk you through a shorter route and help you get to running 5km.",
+    "parkingNote": "There is plenty of bike parking. It is a bar, so there is no carpark, but there are plenty of places to park nearby.",
+    "beerDeal": "$10 beers for runners after every run.",
+    "halfMarathonMention": "We also run an annual Beer Jerk Run Club Half Marathon once a year."
+  },
+  "location": {
+    "name": "Small Gods Taproom",
+    "street": "2 Shaddock Street",
+    "suburb": "Eden Terrace",
+    "city": "Auckland",
+    "country": "NZ",
+    "mapUrl": "https://www.google.com/maps/search/?api=1&query=Small%20Gods%20Taproom%202%20Shaddock%20Street%20Eden%20Terrace%20Auckland"
+  },
+  "schedule": {
+    "bagDrop": "5pm",
+    "runStart": "5:40pm",
+    "runStartLong": "5:40pm sharp",
+    "regularDay": "Monday",
+    "publicHolidayRule": "When Monday is a public holiday, we shift to Tuesday.",
+    "christmasRule": "Check our Instagram around Christmas as we take a little summer break.",
+    "winterNote": "Domain Loop comes back when daylight saving returns.",
+    "anchorMonday": "2026-05-18",
+    "anchorRoute": "Grange Hill",
+    "lookaheadCount": 8,
+    "publicHolidays": {
+      "2026-06-01": "King's Birthday",
+      "2026-10-26": "Labour Day",
+      "2027-01-04": "New Year's Day observed",
+      "2027-01-25": "Auckland Anniversary",
+      "2027-02-08": "Waitangi Day observed",
+      "2027-04-26": "Anzac Day observed",
+      "2027-06-07": "King's Birthday",
+      "2027-10-25": "Labour Day"
+    },
+    "christmasBreak": {
+      "startMonth": 12,
+      "startDay": 23,
+      "endMonth": 1,
+      "endDay": 31
+    }
+  },
+  "afters": {
+    "name": "AFTERS",
+    "day": "First Saturday of the month",
+    "meet": "11:00am",
+    "start": "11:15am",
+    "distance": "8km",
+    "addOn": "Optional 5km Maungawhau add-on",
+    "total": "13km",
+    "summary": "8km social route from Small Gods with an optional 5km Maungawhau add-on for 13km total."
+  },
+  "links": {
+    "instagram": "https://www.instagram.com/beerjerkrunclub/",
+    "strava": "https://www.strava.com/clubs/beerjerk",
+    "beerJerk": "https://www.beerjerk.co.nz",
+    "smallGods": "https://smallgods.co.nz/"
+  },
+  "routes": [
+    {
+      "name": "Grange Hill",
+      "status": "active",
+      "distance": "5km",
+      "map": "embedded_20.jpg",
+      "description": "Run up the hill and turn left down New North Road. Bear left to switch to Dominion Road and continue until you reach Grange Road. Run up Grange Road and turn left at the end onto Mount Eden Road. Follow the road back to the bar."
+    },
+    {
+      "name": "Maungawhau / Mt Eden Loop",
+      "scheduleName": "Maungawhau",
+      "status": "active",
+      "distance": "5km",
+      "map": "embedded_21.jpg",
+      "description": "Turn left and run down Mount Eden Road. Run up and down Maungawhau until you reach Stokes Road with Frasers Cafe on the corner. Run down Stokes and bear left onto Owens Road, then turn left to Mountain Road. Follow the road up then down to Khyber Pass Road, then left again onto Boston Road back to the bar."
+    },
+    {
+      "name": "Beer Mile",
+      "status": "active",
+      "distance": "5km",
+      "map": "embedded_22.jpg",
+      "description": "Run up the hill and turn left down New North Road. Continue along the road until you see Urbanaut Brewery on your left. Turn around and come back the way you came."
+    },
+    {
+      "name": "Domain Loop",
+      "status": "winter-skip",
+      "distance": "5km",
+      "map": "embedded_19.jpg",
+      "description": "Run down the hill and cross over to Boston Road, turn left onto Khyber Pass Road, then left at the lights and up Park Road towards the Domain. Run two loops clockwise and then return the way you came."
+    }
+  ],
+  "images": {
+    "logo": "Main.svg",
+    "tinny": "Tinny_Solo.svg",
+    "ogGenerated": "og-image.png",
+    "hero": [
+      {
+        "file": "embedded_01.jpg",
+        "alt": "Beer Jerk Run Club runners gathered outside Small Gods before a Monday run."
+      },
+      {
+        "file": "embedded_02.jpg",
+        "alt": "Luke briefing Beer Jerk Run Club runners before the Monday route."
+      },
+      {
+        "file": "embedded_03.jpg",
+        "alt": "Three Beer Jerk Run Club runners on an Auckland street."
+      },
+      {
+        "file": "embedded_04.jpg",
+        "alt": "Beer Jerk Run Club group photo after a social run."
+      }
+    ],
+    "crowd": {
+      "file": "embedded_05.jpg",
+      "alt": "Beer Jerk Run Club runners outside Small Gods Taproom."
+    },
+    "instagramPreview": {
+      "heading": "Follow @beerjerkrunclub on Instagram",
+      "copy": "For the freshest photos, routes, news and events, follow us there.",
+      "cta": "Follow @beerjerkrunclub",
+      "posts": [
+        {
+          "file": "embedded_10.jpg",
+          "caption": "Monday runs, post-run drinks and the bits between."
+        },
+        {
+          "file": "embedded_04.jpg",
+          "caption": "Social pace, no pressure, all welcome."
+        },
+        {
+          "file": "embedded_01.jpg",
+          "caption": "Route updates and fresh photos go on Instagram first."
+        }
+      ]
+    },
+    "wall": [
+      "embedded_06.jpg",
+      "embedded_07.jpg",
+      "embedded_08.jpg",
+      "embedded_09.jpg",
+      "embedded_11.jpg",
+      "embedded_12.jpg",
+      "embedded_13.jpg",
+      "embedded_14.jpg",
+      "embedded_15.jpg",
+      "embedded_16.jpg",
+      "embedded_17.jpg",
+      "embedded_18.jpg"
+    ],
+    "og": "embedded_01.jpg"
+  },
+  "faq": [
+    {
+      "question": "Is Beer Jerk Run Club free?",
+      "answer": "Yes. It is free. You do need to buy your own drinks though. There are $10 beers for runners plus plenty of other options."
+    },
+    {
+      "question": "When does Beer Jerk Run Club meet?",
+      "answer": "Beer Jerk Run Club meets on Mondays at Small Gods Taproom in Eden Terrace. Bag drop is from 5pm and the run starts at 5:40pm sharp."
+    },
+    {
+      "question": "Where does the run start?",
+      "answer": "The run starts from Small Gods Taproom at 2 Shaddock Street, Eden Terrace, Auckland."
+    },
+    {
+      "question": "Streak Board?",
+      "answer": "Check in for 8 runs in a row and you will get a delicious prize."
+    },
+    {
+      "question": "What pace is Beer Jerk Run Club?",
+      "answer": "Nobody cares how fast or how slow you are. Only that you have a good time and get your heart rate up. People. Over. Pace."
+    },
+    {
+      "question": "What happens after the run?",
+      "answer": "People have a social drink at the Taproom. There are $10 beers for runners after every run, plus soft drinks, cider, wine and AF beers."
+    },
+    {
+      "question": "Do I need to sign up?",
+      "answer": "No. Just turn up before 5:40pm on Monday."
+    },
+    {
+      "question": "What happens on public holidays?",
+      "answer": "When Monday is a public holiday, Beer Jerk Run Club shifts to Tuesday."
+    }
+  ],
+  "futureModules": {
+    "streakBoard": {
+      "enabled": false,
+      "note": "Launch excludes the Streak Board. The site structure keeps content modular so the board can be added later without rebuilding the site from scratch."
+    }
+  }
+}
