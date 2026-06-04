@@ -530,6 +530,11 @@ function styles() {
     border-right: 1px solid rgba(245,242,234,0.32);
   }
   .next-run > div:last-child { border-right: 0; }
+  .next-run .eyebrow {
+    font-size: clamp(18px, 1.25vw, 26px);
+    letter-spacing: 0.2em;
+    line-height: 1;
+  }
   .eyebrow {
     font-family: 'Barlow Condensed', Impact, sans-serif;
     font-weight: 800;
@@ -541,11 +546,12 @@ function styles() {
   .next-run .sub {
     font-family: 'Barlow Condensed', Impact, sans-serif;
     font-weight: 800;
-    font-size: 12px;
-    letter-spacing: 0.1em;
+    font-size: clamp(16px, 1.05vw, 22px);
+    letter-spacing: 0.12em;
+    line-height: 1.05;
     text-transform: uppercase;
-    opacity: 0.78;
-    margin-top: 4px;
+    opacity: 0.9;
+    margin-top: 10px;
   }
   .nr-big {
     font-family: 'Barlow Condensed', Impact, sans-serif;
@@ -1161,6 +1167,8 @@ function styles() {
     .brand img { width: 34px; height: 34px; }
     .next-run { grid-template-columns: 1fr; }
     .next-run > div { border-right: 0; border-bottom: 1px solid rgba(245,242,234,0.32); padding: 16px 20px; }
+    .next-run .eyebrow { font-size: 17px; }
+    .next-run .sub { font-size: 16px; margin-top: 8px; }
     .hero { min-height: 660px; }
     .hero-content { grid-template-columns: 1fr; padding: 30px 22px 42px; }
     .tinny { justify-self: end; }
