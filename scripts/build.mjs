@@ -600,6 +600,12 @@ function styles() {
     align-items: end;
     padding: 42px 32px 46px;
   }
+  .hero-content .eyebrow {
+    font-size: clamp(18px, 1.45vw, 28px);
+    line-height: 1.05;
+    letter-spacing: 0.16em;
+    margin-bottom: 12px;
+  }
   .hero h1 {
     font-family: 'Barlow Condensed', Impact, sans-serif;
     font-weight: 900;
@@ -742,11 +748,9 @@ function styles() {
     height: 100%;
     object-fit: cover;
     filter: contrast(1.03) brightness(0.9);
-    transform: scale(1.01);
     transition: transform 180ms ease, filter 180ms ease;
   }
   .insta-card:hover img {
-    transform: scale(1.045);
     filter: contrast(1.06) brightness(0.98);
   }
   .insta-caption {
@@ -1177,6 +1181,7 @@ function styles() {
     .next-run .sub { font-size: 16px; margin-top: 8px; }
     .hero { min-height: 660px; }
     .hero-content { grid-template-columns: 1fr; padding: 30px 22px 42px; }
+    .hero-content .eyebrow { font-size: 17px; }
     .tinny { justify-self: end; }
     .section-head { grid-template-columns: 1fr; padding: 30px 22px 20px; gap: 14px; }
     .content-copy, .routes-intro, .note { padding-left: 22px; padding-right: 22px; }
