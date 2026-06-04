@@ -14,7 +14,6 @@ const publicDir = path.join(root, 'public');
 const sourceAssets = path.join(root, 'assets');
 const responsiveManifest = new Map();
 const dimensionCache = new Map();
-const resizeBypassAssets = new Set(['instagram-half-tee.jpg']);
 
 const now = process.env.BUILD_DATE ? new Date(process.env.BUILD_DATE) : new Date();
 const siteUrl = data.site.url.replace(/\/$/, '');
@@ -233,11 +232,6 @@ function generateResponsiveAsset(file, widths) {
   for (const width of widths.filter(w => w <= originalWidth)) {
     const outFile = responsiveName(file, width);
     const outPath = path.join(distAssets, outFile);
-    if (resizeBypassAssets.has(file)) {
-      fs.copyFileSync(from, outPath);
-      variants.push({ file: outFile, width });
-      continue;
-    }
     try {
       execFileSync('sips', ['-Z', String(width), '-s', 'formatOptions', '72', from, '--out', outPath], { stdio: 'ignore' });
       variants.push({ file: outFile, width });
@@ -683,9 +677,14 @@ function styles() {
     font-family: 'Barlow Condensed', Impact, sans-serif;
     font-weight: 900;
     font-style: italic;
-    font-size: clamp(46px, 7vw, 88px);
+    font-size: clamp(46px, 6.2vw, 82px);
     line-height: 0.86;
     text-transform: uppercase;
+  }
+  .insta-handle {
+    display: block;
+    font-size: 0.58em;
+    white-space: nowrap;
   }
   .insta-copy p {
     max-width: 520px;
@@ -1247,10 +1246,11 @@ function wallTiles() {
 
 function instagramPreview() {
   const preview = data.images.instagramPreview;
+  const heading = esc(preview.heading).replace('@beerjerkrunclub', '<span class="insta-handle">@beerjerkrunclub</span>');
   return `<section class="section insta-preview" aria-labelledby="instagram-heading">
     <div class="insta-copy">
       <div class="eyebrow muted">Instagram</div>
-      <h2 id="instagram-heading">${esc(preview.heading)}</h2>
+      <h2 id="instagram-heading">${heading}</h2>
       <p>${esc(preview.copy)}</p>
       <a class="insta-follow" href="${attr(data.links.instagram)}" target="_blank" rel="noopener">${esc(preview.cta)}</a>
     </div>
