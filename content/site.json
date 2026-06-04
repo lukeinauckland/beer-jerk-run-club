@@ -138,16 +138,19 @@
       "cta": "Follow @beerjerkrunclub",
       "posts": [
         {
-          "file": "embedded_10.jpg",
-          "caption": "Monday runs, post-run drinks and the bits between."
+          "file": "instagram-dogs.jpg",
+          "alt": "Beer Jerk Run Club group photo outside Small Gods with a dog in front.",
+          "caption": "Good dogs are always welcome at BJRC"
         },
         {
-          "file": "embedded_04.jpg",
-          "caption": "Social pace, no pressure, all welcome."
+          "file": "instagram-half-tee.jpg",
+          "alt": "Beer Jerk Run Club half marathon tee with Tinny artwork.",
+          "caption": "Half Marathon Tees looking 🔥 Thanks Paul!"
         },
         {
-          "file": "embedded_01.jpg",
-          "caption": "Route updates and fresh photos go on Instagram first."
+          "file": "instagram-beers.jpg",
+          "alt": "Beer Jerk Run Club runners having beers after a run.",
+          "caption": "The run was fine but we're mainly here for the beers 🍻"
         }
       ]
     },

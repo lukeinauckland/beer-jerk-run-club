@@ -90,5 +90,17 @@
   "embedded_22.jpg": {
     "width": 475,
     "height": 230
+  },
+  "instagram-dogs.jpg": {
+    "width": 2048,
+    "height": 1536
+  },
+  "instagram-half-tee.jpg": {
+    "width": 5712,
+    "height": 4284
+  },
+  "instagram-beers.jpg": {
+    "width": 1193,
+    "height": 1193
   }
 }

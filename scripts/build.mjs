@@ -14,6 +14,7 @@ const publicDir = path.join(root, 'public');
 const sourceAssets = path.join(root, 'assets');
 const responsiveManifest = new Map();
 const dimensionCache = new Map();
+const resizeBypassAssets = new Set(['instagram-half-tee.jpg']);
 
 const now = process.env.BUILD_DATE ? new Date(process.env.BUILD_DATE) : new Date();
 const siteUrl = data.site.url.replace(/\/$/, '');
@@ -232,6 +233,11 @@ function generateResponsiveAsset(file, widths) {
   for (const width of widths.filter(w => w <= originalWidth)) {
     const outFile = responsiveName(file, width);
     const outPath = path.join(distAssets, outFile);
+    if (resizeBypassAssets.has(file)) {
+      fs.copyFileSync(from, outPath);
+      variants.push({ file: outFile, width });
+      continue;
+    }
     try {
       execFileSync('sips', ['-Z', String(width), '-s', 'formatOptions', '72', from, '--out', outPath], { stdio: 'ignore' });
       variants.push({ file: outFile, width });
@@ -1248,7 +1254,7 @@ function instagramPreview() {
         ${eagerImg({
           file: post.file,
           sizes: '(max-width: 720px) 88vw, 24vw',
-          alt: `${data.site.name} Instagram preview ${index + 1}`,
+          alt: post.alt || `${data.site.name} Instagram preview ${index + 1}`,
           extra: ' loading="lazy"'
         })}
         <span class="insta-caption">${esc(post.caption)}</span>
