@@ -713,13 +713,12 @@ function styles() {
   }
   .insta-card {
     position: relative;
-    aspect-ratio: 4 / 5;
     overflow: hidden;
     border-right: 1px solid var(--ink);
     color: var(--ink);
     text-decoration: none;
     background: var(--paper);
-    padding: 38px 10px 72px;
+    padding-top: 38px;
   }
   .insta-card:last-child { border-right: 0; }
   .insta-card::before {
@@ -743,9 +742,11 @@ function styles() {
     text-transform: uppercase;
   }
   .insta-card img {
+    display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    object-fit: contain;
     filter: contrast(1.03) brightness(0.9);
     transition: transform 180ms ease, filter 180ms ease;
   }
@@ -753,11 +754,6 @@ function styles() {
     filter: contrast(1.06) brightness(0.98);
   }
   .insta-caption {
-    position: absolute;
-    z-index: 1;
-    left: 0;
-    right: 0;
-    bottom: 0;
     min-height: 72px;
     padding: 11px 12px 12px;
     border-top: 1px solid var(--ink);
@@ -1188,7 +1184,7 @@ function styles() {
     .strip-item { border-right: 0; border-bottom: 1px solid var(--ink); min-height: 220px; padding: 26px 22px; }
     .insta-copy { padding: 30px 22px; }
     .insta-grid { grid-template-columns: 1fr; }
-    .insta-card { aspect-ratio: 1 / 1; border-right: 0; border-bottom: 1px solid var(--ink); }
+    .insta-card { border-right: 0; border-bottom: 1px solid var(--ink); }
     .wall-tile { flex-basis: 50%; }
     .wall-feature { flex-basis: 100%; aspect-ratio: 16 / 11; }
     .schedule-list { padding: 10px 22px 28px; }

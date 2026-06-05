@@ -1,6 +1,6 @@
 # Build Report
 
-Generated: 2026-06-04T03:39:22.327Z
+Generated: 2026-06-05T03:44:10.171Z
 
 ## Site
 
@@ -15,7 +15,7 @@ Generated: 2026-06-04T03:39:22.327Z
 - Asset folder size: 5306KB
 - Asset count: 44
 - Homepage size: 28KB
-- CSS size: 21KB
+- CSS size: 20KB
 - OG image size: 321KB
 
 ## Pages
