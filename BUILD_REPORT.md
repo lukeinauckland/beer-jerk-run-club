@@ -1,6 +1,6 @@
 # Build Report
 
-Generated: 2026-06-05T04:49:27.147Z
+Generated: 2026-06-05T04:55:46.158Z
 
 ## Site
 
@@ -11,16 +11,16 @@ Generated: 2026-06-05T04:49:27.147Z
 
 ## Current Build
 
-- Total dist size: 5777KB
+- Total dist size: 5779KB
 - Asset folder size: 5306KB
 - Asset count: 44
-- Homepage size: 28KB
-- CSS size: 20KB
+- Homepage size: 29KB
+- CSS size: 21KB
 - OG image size: 321KB
 
 ## Pages
 
-- / (28KB)
+- / (29KB)
 - /new-runners (8KB)
 - /schedule (7KB)
 - /routes (8KB)

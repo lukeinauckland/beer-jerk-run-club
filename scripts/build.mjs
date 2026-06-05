@@ -660,6 +660,39 @@ function styles() {
   }
   .strip p { margin-top: auto; }
   .beer-card { background: var(--red); color: var(--paper); }
+  .quick-links {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-bottom: 1px solid var(--ink);
+    background: var(--paper);
+  }
+  .quick-link {
+    padding: 18px 28px;
+    border-right: 1px solid var(--ink);
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(24px, 3vw, 36px);
+    line-height: 1;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: center;
+  }
+  .quick-link:last-child { border-right: 0; }
+  .quick-link span:first-child {
+    color: var(--red);
+    font-size: 0.58em;
+    font-style: normal;
+    letter-spacing: 0.14em;
+  }
+  .quick-link:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .quick-link:hover span:first-child { color: var(--paper); }
   .insta-preview {
     background: var(--ink);
     color: var(--paper);
@@ -1144,6 +1177,9 @@ function styles() {
   @media (max-width: 980px) {
     .strip { grid-template-columns: repeat(2, 1fr); }
     .strip-item:nth-child(2n) { border-right: 0; }
+    .quick-links { grid-template-columns: 1fr; }
+    .quick-link { border-right: 0; border-bottom: 1px solid var(--ink); }
+    .quick-link:last-child { border-bottom: 0; }
     .wall-tile { flex-basis: 33.333%; }
     .wall-feature { flex-basis: 66.666%; }
     .routes-grid { grid-template-columns: 1fr; }
@@ -1168,6 +1204,7 @@ function styles() {
     .content-copy, .routes-intro, .note { padding-left: 22px; padding-right: 22px; }
     .strip { grid-template-columns: 1fr; }
     .strip-item { border-right: 0; border-bottom: 1px solid var(--ink); min-height: 220px; padding: 26px 22px; }
+    .quick-link { padding: 16px 22px; }
     .insta-preview { padding: 36px 22px 42px; }
     .insta-copy { padding: 0 0 24px; }
     .insta-grid { grid-template-columns: 1fr; }
@@ -1361,6 +1398,19 @@ function renderHtml() {
     </article>
   </section>
 
+  <section class="quick-links" aria-label="Quick links">
+    <a class="quick-link" href="${attr(data.links.instagram)}" target="_blank" rel="noopener"><span>Follow</span> Instagram →</a>
+    <a class="quick-link" href="${attr(data.links.strava)}" target="_blank" rel="noopener"><span>Join</span> Strava Club →</a>
+    <a class="quick-link" href="${attr(data.location.mapUrl)}" target="_blank" rel="noopener"><span>Find</span> Small Gods →</a>
+  </section>
+
+  <section class="section" id="new-here">
+    <div class="section-head plain">
+      <h2 class="section-title">New Here?</h2>
+    </div>
+    <p class="content-copy">${esc(data.club.audience)} Meet at ${esc(data.location.name)} from 5. ${esc(data.club.bagDropNote)} ${esc(data.club.newRunnerNote)}</p>
+  </section>
+
   <section class="links" aria-label="External links">
     <a class="link-cell" href="${attr(data.links.instagram)}" target="_blank" rel="noopener">
       <span class="link-label">- Follow</span>
@@ -1374,13 +1424,6 @@ function renderHtml() {
       <span class="link-label">- Find</span>
       <span class="link-name">Small Gods <span class="arrow">→</span></span>
     </a>
-  </section>
-
-  <section class="section" id="new-here">
-    <div class="section-head plain">
-      <h2 class="section-title">New Here?</h2>
-    </div>
-    <p class="content-copy">${esc(data.club.audience)} Meet at ${esc(data.location.name)} from 5. ${esc(data.club.bagDropNote)} ${esc(data.club.newRunnerNote)}</p>
   </section>
 
   <section class="section schedule" id="schedule">
