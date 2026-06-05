@@ -826,11 +826,11 @@ function styles() {
     border-bottom: 1px solid rgba(236,28,36,0.25);
   }
   .schedule-row.next {
-    background: var(--paper-warm);
-    margin: 0 -16px;
-    padding-left: 16px;
-    padding-right: 16px;
-    border-radius: 4px;
+    background: var(--red);
+    color: var(--paper);
+    margin: 10px -18px 18px;
+    padding: 22px 18px;
+    border-bottom: 0;
   }
   .schedule-date, .schedule-route, .km, .next-badge, .route-num, .link-label, footer h2, footer h5 {
     font-family: 'Barlow Condensed', Impact, sans-serif;
@@ -872,6 +872,12 @@ function styles() {
     vertical-align: 0.08em;
   }
   .schedule-row.afters-row .schedule-route, .schedule-row.afters-row .schedule-date { color: var(--ink); }
+  .schedule-row.next .schedule-date,
+  .schedule-row.next .schedule-route,
+  .schedule-row.next .schedule-day,
+  .schedule-row.next .km {
+    color: var(--paper);
+  }
   .km {
     font-weight: 800;
     font-size: 14px;
@@ -882,9 +888,9 @@ function styles() {
   }
   .next-badge {
     display: inline-block;
-    background: var(--red);
-    color: var(--paper);
-    padding: 2px 8px;
+    background: var(--paper);
+    color: var(--red);
+    padding: 4px 9px;
     font-weight: 800;
     font-size: 11px;
     letter-spacing: 0.18em;
@@ -1170,6 +1176,7 @@ function styles() {
     .wall-feature { flex-basis: 100%; aspect-ratio: 16 / 11; }
     .schedule-list { padding: 10px 22px 28px; }
     .schedule-row { grid-template-columns: 1fr; align-items: start; gap: 8px; padding: 18px 0; }
+    .schedule-row.next { margin: 8px -22px 16px; padding: 22px; }
     .schedule-route { text-align: left; }
     .schedule-route .km { display: block; margin: 5px 0 0; }
     .route, .afters-card { grid-template-columns: 1fr; }
