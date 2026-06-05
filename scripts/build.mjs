@@ -661,41 +661,37 @@ function styles() {
   .strip p { margin-top: auto; }
   .beer-card { background: var(--red); color: var(--paper); }
   .insta-preview {
-    display: grid;
-    grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.6fr);
-    background: var(--paper);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 46px 32px 52px;
   }
   .insta-copy {
-    padding: 34px 32px;
-    border-right: 1px solid var(--ink);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 18px;
+    max-width: 1120px;
+    padding: 0 0 28px;
   }
   .insta-copy h2 {
     font-family: 'Barlow Condensed', Impact, sans-serif;
     font-weight: 900;
     font-style: italic;
-    font-size: clamp(46px, 6.2vw, 82px);
+    font-size: clamp(44px, 8vw, 104px);
     line-height: 0.86;
     text-transform: uppercase;
   }
   .insta-handle {
-    display: block;
-    font-size: 0.58em;
-    white-space: nowrap;
+    color: var(--red);
   }
   .insta-copy p {
     max-width: 520px;
     font-size: clamp(18px, 2vw, 22px);
     line-height: 1.35;
+    color: rgba(245,242,234,0.86);
+    margin-top: 18px;
   }
   .insta-follow {
     width: fit-content;
     background: var(--red);
     color: var(--paper);
-    border: 1px solid var(--ink);
+    border: 1px solid var(--paper);
     padding: 12px 16px;
     font-family: 'Barlow Condensed', Impact, sans-serif;
     font-weight: 900;
@@ -704,42 +700,25 @@ function styles() {
     line-height: 1;
     text-transform: uppercase;
     text-decoration: none;
+    display: inline-block;
+    margin-top: 22px;
   }
-  .insta-follow:hover { background: var(--ink); color: var(--paper); }
+  .insta-follow:hover { background: var(--paper); color: var(--ink); }
   .insta-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-left: 0;
+    gap: 18px;
   }
   .insta-card {
     position: relative;
     overflow: hidden;
-    border-right: 1px solid var(--ink);
+    border: 1px solid rgba(245,242,234,0.28);
     color: var(--ink);
     text-decoration: none;
     background: var(--paper);
-    padding-top: 38px;
   }
-  .insta-card:last-child { border-right: 0; }
   .insta-card::before {
-    content: '@beerjerkrunclub';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 38px;
-    display: flex;
-    align-items: center;
-    padding: 0 12px 0 42px;
-    border-bottom: 1px solid var(--ink);
-    background:
-      radial-gradient(circle at 20px 50%, var(--red) 0 7px, transparent 8px),
-      var(--paper);
-    font-family: 'Barlow Condensed', Impact, sans-serif;
-    font-weight: 900;
-    font-style: italic;
-    font-size: 18px;
-    text-transform: uppercase;
+    content: none;
   }
   .insta-card img {
     display: block;
@@ -747,19 +726,19 @@ function styles() {
     aspect-ratio: 1 / 1;
     height: auto;
     object-fit: contain;
-    filter: contrast(1.03) brightness(0.9);
-    transition: transform 180ms ease, filter 180ms ease;
+    filter: contrast(1.02);
+    transition: filter 180ms ease;
   }
   .insta-card:hover img {
-    filter: contrast(1.06) brightness(0.98);
+    filter: contrast(1.06);
   }
   .insta-caption {
-    min-height: 72px;
-    padding: 11px 12px 12px;
+    min-height: 78px;
+    padding: 13px 14px 14px;
     border-top: 1px solid var(--ink);
     background: var(--paper);
-    font-size: 14px;
-    line-height: 1.25;
+    font-size: 15px;
+    line-height: 1.28;
     color: var(--ink);
   }
   .section {
@@ -1156,8 +1135,6 @@ function styles() {
   @media (max-width: 980px) {
     .strip { grid-template-columns: repeat(2, 1fr); }
     .strip-item:nth-child(2n) { border-right: 0; }
-    .insta-preview { grid-template-columns: 1fr; }
-    .insta-copy { border-right: 0; border-bottom: 1px solid var(--ink); }
     .wall-tile { flex-basis: 33.333%; }
     .wall-feature { flex-basis: 66.666%; }
     .routes-grid { grid-template-columns: 1fr; }
@@ -1182,9 +1159,10 @@ function styles() {
     .content-copy, .routes-intro, .note { padding-left: 22px; padding-right: 22px; }
     .strip { grid-template-columns: 1fr; }
     .strip-item { border-right: 0; border-bottom: 1px solid var(--ink); min-height: 220px; padding: 26px 22px; }
-    .insta-copy { padding: 30px 22px; }
+    .insta-preview { padding: 36px 22px 42px; }
+    .insta-copy { padding: 0 0 24px; }
     .insta-grid { grid-template-columns: 1fr; }
-    .insta-card { border-right: 0; border-bottom: 1px solid var(--ink); }
+    .insta-card { border-bottom: 1px solid rgba(245,242,234,0.28); }
     .wall-tile { flex-basis: 50%; }
     .wall-feature { flex-basis: 100%; aspect-ratio: 16 / 11; }
     .schedule-list { padding: 10px 22px 28px; }
@@ -1373,8 +1351,6 @@ function renderHtml() {
     </article>
   </section>
 
-  ${instagramPreview()}
-
   <section class="section" id="new-here">
     <div class="section-head plain">
       <h2 class="section-title">New Here?</h2>
@@ -1426,6 +1402,8 @@ function renderHtml() {
     </div>
     <div class="faq-list">${faqItems()}</div>
   </section>
+
+  ${instagramPreview()}
 
   <section class="links" aria-label="External links">
     <a class="link-cell" href="${attr(data.links.instagram)}" target="_blank" rel="noopener">
