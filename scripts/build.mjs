@@ -710,12 +710,13 @@ function styles() {
     gap: 18px;
   }
   .insta-card {
-    position: relative;
     overflow: hidden;
     border: 1px solid rgba(245,242,234,0.28);
     color: var(--ink);
     text-decoration: none;
     background: var(--paper);
+    display: flex;
+    flex-direction: column;
   }
   .insta-card::before {
     content: none;
@@ -733,13 +734,15 @@ function styles() {
     filter: contrast(1.06);
   }
   .insta-caption {
-    min-height: 78px;
-    padding: 13px 14px 14px;
-    border-top: 1px solid var(--ink);
-    background: var(--paper);
-    font-size: 15px;
-    line-height: 1.28;
+    min-height: 88px;
+    padding: 16px 18px 18px;
+    background: #f5f2ea;
+    font-size: clamp(16px, 1.45vw, 19px);
+    line-height: 1.25;
     color: var(--ink);
+    display: flex;
+    align-items: flex-start;
+    overflow-wrap: anywhere;
   }
   .section {
     border-bottom: 1px solid var(--ink);
