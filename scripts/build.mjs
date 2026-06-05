@@ -1411,21 +1411,6 @@ function renderHtml() {
     <p class="content-copy">${esc(data.club.audience)} Meet at ${esc(data.location.name)} from 5. ${esc(data.club.bagDropNote)} ${esc(data.club.newRunnerNote)}</p>
   </section>
 
-  <section class="links" aria-label="External links">
-    <a class="link-cell" href="${attr(data.links.instagram)}" target="_blank" rel="noopener">
-      <span class="link-label">- Follow</span>
-      <span class="link-name">Instagram <span class="arrow">→</span></span>
-    </a>
-    <a class="link-cell" href="${attr(data.links.strava)}" target="_blank" rel="noopener">
-      <span class="link-label">- Join</span>
-      <span class="link-name">Strava Club <span class="arrow">→</span></span>
-    </a>
-    <a class="link-cell" href="${attr(data.location.mapUrl)}" target="_blank" rel="noopener">
-      <span class="link-label">- Find</span>
-      <span class="link-name">Small Gods <span class="arrow">→</span></span>
-    </a>
-  </section>
-
   <section class="section schedule" id="schedule">
     <div class="section-head plain">
       <h2 class="section-title">Coming Up</h2>
