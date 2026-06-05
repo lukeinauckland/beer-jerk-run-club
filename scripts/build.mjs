@@ -1351,6 +1351,21 @@ function renderHtml() {
     </article>
   </section>
 
+  <section class="links" aria-label="External links">
+    <a class="link-cell" href="${attr(data.links.instagram)}" target="_blank" rel="noopener">
+      <span class="link-label">- Follow</span>
+      <span class="link-name">Instagram <span class="arrow">→</span></span>
+    </a>
+    <a class="link-cell" href="${attr(data.links.strava)}" target="_blank" rel="noopener">
+      <span class="link-label">- Join</span>
+      <span class="link-name">Strava Club <span class="arrow">→</span></span>
+    </a>
+    <a class="link-cell" href="${attr(data.location.mapUrl)}" target="_blank" rel="noopener">
+      <span class="link-label">- Find</span>
+      <span class="link-name">Small Gods <span class="arrow">→</span></span>
+    </a>
+  </section>
+
   <section class="section" id="new-here">
     <div class="section-head plain">
       <h2 class="section-title">New Here?</h2>
@@ -1405,20 +1420,6 @@ function renderHtml() {
 
   ${instagramPreview()}
 
-  <section class="links" aria-label="External links">
-    <a class="link-cell" href="${attr(data.links.instagram)}" target="_blank" rel="noopener">
-      <span class="link-label">- Follow</span>
-      <span class="link-name">Instagram <span class="arrow">→</span></span>
-    </a>
-    <a class="link-cell" href="${attr(data.links.strava)}" target="_blank" rel="noopener">
-      <span class="link-label">- Join</span>
-      <span class="link-name">Strava Club <span class="arrow">→</span></span>
-    </a>
-    <a class="link-cell" href="${attr(data.location.mapUrl)}" target="_blank" rel="noopener">
-      <span class="link-label">- Find</span>
-      <span class="link-name">Small Gods <span class="arrow">→</span></span>
-    </a>
-  </section>
 </main>
 
 <footer>
