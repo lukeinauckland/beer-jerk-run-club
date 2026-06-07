@@ -1,6 +1,6 @@
 # Build Report
 
-Generated: 2026-06-05T05:01:42.012Z
+Generated: 2026-06-07T07:31:27.898Z
 
 ## Site
 
@@ -11,27 +11,27 @@ Generated: 2026-06-05T05:01:42.012Z
 
 ## Current Build
 
-- Total dist size: 5778KB
+- Total dist size: 5815KB
 - Asset folder size: 5306KB
 - Asset count: 44
-- Homepage size: 28KB
+- Homepage size: 35KB
 - CSS size: 21KB
 - OG image size: 321KB
 
 ## Pages
 
-- / (28KB)
-- /new-runners (8KB)
-- /schedule (7KB)
-- /routes (8KB)
-- /afters (6KB)
+- / (35KB)
+- /new-runners (16KB)
+- /schedule (15KB)
+- /routes (15KB)
+- /afters (13KB)
 - /404 (2KB)
 
 ## Next Run Snapshot
 
-- Day/date label: Saturday 6 June
-- Date: 6 June
-- Route: AFTERS · Saturday long run
+- Day/date label: Monday 8 June
+- Date: 8 June
+- Route: Grange Hill
 
 ## Generated SEO / AI Files
 

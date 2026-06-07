@@ -15,7 +15,7 @@ const sourceAssets = path.join(root, 'assets');
 const responsiveManifest = new Map();
 const dimensionCache = new Map();
 
-const now = process.env.BUILD_DATE ? new Date(process.env.BUILD_DATE) : new Date();
+const now = process.env.BUILD_DATE ? new Date(process.env.BUILD_DATE) : aucklandNow();
 const siteUrl = data.site.url.replace(/\/$/, '');
 
 fs.rmSync(dist, { recursive: true, force: true });
@@ -70,6 +70,22 @@ function startOfDay(date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
+function aucklandNow(date = new Date()) {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-NZ', {
+      timeZone: 'Pacific/Auckland',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: false
+    }).formatToParts(date).filter(part => part.type !== 'literal').map(part => [part.type, Number(part.value)])
+  );
+  return new Date(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second || 0);
+}
+
 const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 const fullMonthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -85,6 +101,22 @@ function longDate(date) {
 function parseLocalDate(value) {
   const [year, month, day] = value.split('-').map(Number);
   return new Date(year, month - 1, day);
+}
+
+function parseTime(value) {
+  const match = String(value).trim().toLowerCase().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/);
+  if (!match) return { hours: 0, minutes: 0 };
+  let hours = Number(match[1]);
+  const minutes = Number(match[2] || 0);
+  const suffix = match[3];
+  if (suffix === 'pm' && hours < 12) hours += 12;
+  if (suffix === 'am' && hours === 12) hours = 0;
+  return { hours, minutes };
+}
+
+function withTime(date, time) {
+  const { hours, minutes } = parseTime(time);
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes);
 }
 
 function isChristmasBreak(date) {
@@ -132,18 +164,20 @@ function mondayEvent(monday) {
 }
 
 function buildEvents(date) {
-  const events = [];
-  let monday = nextMondayFrom(date);
-  while (events.length < 12) {
-    if (!isChristmasBreak(monday)) events.push(mondayEvent(monday));
+  const candidates = [];
+  let monday = addDays(nextMondayFrom(addDays(date, -21)), -7);
+  for (let i = 0; i < 20; i++) {
+    if (!isChristmasBreak(monday)) {
+      const event = mondayEvent(monday);
+      if (withTime(event.date, data.schedule.runStart) > date) candidates.push(event);
+    }
     monday = addDays(monday, 7);
   }
 
-  const afters = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = -1; i < 6; i++) {
     const d = firstSaturday(date.getFullYear(), date.getMonth() + i);
-    if (d >= startOfDay(date) && !isChristmasBreak(d)) {
-      afters.push({
+    if (!isChristmasBreak(d) && withTime(d, data.afters.start) > date) {
+      candidates.push({
         type: 'afters',
         date: d,
         sortDate: d,
@@ -154,7 +188,7 @@ function buildEvents(date) {
     }
   }
 
-  return [...events, ...afters]
+  return candidates
     .sort((a, b) => a.sortDate - b.sortDate)
     .slice(0, data.schedule.lookaheadCount);
 }
@@ -1289,6 +1323,193 @@ function instagramPreview() {
   </section>`;
 }
 
+function clientScheduleScript() {
+  const scheduleData = {
+    routes: activeRoutes.map(route => ({
+      name: route.name,
+      scheduleName: route.scheduleName || route.name,
+      distance: route.distance
+    })),
+    anchorMonday: data.schedule.anchorMonday,
+    runStart: data.schedule.runStart,
+    bagDrop: data.schedule.bagDrop,
+    lookaheadCount: data.schedule.lookaheadCount,
+    publicHolidays: data.schedule.publicHolidays,
+    christmasBreak: data.schedule.christmasBreak,
+    afters: {
+      name: data.afters.name,
+      start: data.afters.start,
+      meet: data.afters.meet,
+      distance: data.afters.distance,
+      total: data.afters.total
+    }
+  };
+  return `<script>
+(function() {
+  var data = ${JSON.stringify(scheduleData)};
+  var dayNames = ${JSON.stringify(dayNames)};
+  var monthNames = ${JSON.stringify(monthNames)};
+  var fullMonthNames = ${JSON.stringify(fullMonthNames)};
+
+  function esc(value) {
+    return String(value == null ? '' : value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+  }
+  function aucklandNow(date) {
+    var parts = {};
+    new Intl.DateTimeFormat('en-NZ', {
+      timeZone: 'Pacific/Auckland',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: false
+    }).formatToParts(date || new Date()).forEach(function(part) {
+      if (part.type !== 'literal') parts[part.type] = Number(part.value);
+    });
+    return new Date(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second || 0);
+  }
+  function parseDate(value) {
+    var bits = value.split('-').map(Number);
+    return new Date(bits[0], bits[1] - 1, bits[2]);
+  }
+  function dateKey(date) {
+    return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+  }
+  function addDays(date, days) {
+    var next = new Date(date);
+    next.setDate(next.getDate() + days);
+    return next;
+  }
+  function startOfDay(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+  function parseTime(value) {
+    var match = String(value).trim().toLowerCase().match(/^(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)?$/);
+    if (!match) return { hours: 0, minutes: 0 };
+    var hours = Number(match[1]);
+    var minutes = Number(match[2] || 0);
+    if (match[3] === 'pm' && hours < 12) hours += 12;
+    if (match[3] === 'am' && hours === 12) hours = 0;
+    return { hours: hours, minutes: minutes };
+  }
+  function withTime(date, time) {
+    var parsed = parseTime(time);
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), parsed.hours, parsed.minutes);
+  }
+  function shortDate(date) {
+    return date.getDate() + ' ' + monthNames[date.getMonth()];
+  }
+  function longDate(date) {
+    return dayNames[date.getDay()] + ' ' + date.getDate() + ' ' + fullMonthNames[date.getMonth()];
+  }
+  function firstSaturday(year, monthIndex) {
+    var date = new Date(year, monthIndex, 1);
+    var offset = (6 - date.getDay() + 7) % 7;
+    return addDays(date, offset);
+  }
+  function isChristmasBreak(date) {
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var rule = data.christmasBreak;
+    return (month === rule.startMonth && day >= rule.startDay) || (month === rule.endMonth && day <= rule.endDay);
+  }
+  function nextMondayFrom(date) {
+    var today = startOfDay(date);
+    var offset = (1 - today.getDay() + 7) % 7;
+    return addDays(today, offset);
+  }
+  function routeForMonday(monday) {
+    var anchor = parseDate(data.anchorMonday);
+    var weeks = Math.round((startOfDay(monday) - anchor) / (7 * 24 * 60 * 60 * 1000));
+    var index = ((weeks % data.routes.length) + data.routes.length) % data.routes.length;
+    return data.routes[index];
+  }
+  function mondayEvent(monday) {
+    var holiday = data.publicHolidays[dateKey(monday)];
+    var runDate = holiday ? addDays(monday, 1) : monday;
+    var route = routeForMonday(monday);
+    return {
+      type: 'monday',
+      date: runDate,
+      sortDate: runDate,
+      route: route.scheduleName,
+      km: route.distance,
+      note: holiday || ''
+    };
+  }
+  function buildEvents(now) {
+    var candidates = [];
+    var monday = addDays(nextMondayFrom(addDays(now, -21)), -7);
+    for (var i = 0; i < 20; i++) {
+      if (!isChristmasBreak(monday)) {
+        var event = mondayEvent(monday);
+        if (withTime(event.date, data.runStart) > now) candidates.push(event);
+      }
+      monday = addDays(monday, 7);
+    }
+    for (var j = -1; j < 6; j++) {
+      var aftersDate = firstSaturday(now.getFullYear(), now.getMonth() + j);
+      if (!isChristmasBreak(aftersDate) && withTime(aftersDate, data.afters.start) > now) {
+        candidates.push({
+          type: 'afters',
+          date: aftersDate,
+          sortDate: aftersDate,
+          route: data.afters.name + ' · Saturday long run',
+          km: data.afters.distance + ' / ' + data.afters.total,
+          note: ''
+        });
+      }
+    }
+    return candidates.sort(function(a, b) { return a.sortDate - b.sortDate; }).slice(0, data.lookaheadCount);
+  }
+  function nextEventSubline(event) {
+    if (event.type === 'afters') return event.km + ' · ' + data.afters.start + ' · Meet from ' + data.afters.meet;
+    return event.km + ' · ' + data.runStart + ' · Bag drop from ' + data.bagDrop + (event.note ? ' · Tuesday shift' : '');
+  }
+  function nextEventLabel(event) {
+    return event.type === 'afters' ? 'Event' : 'Route';
+  }
+  function scheduleRows(events) {
+    return events.map(function(event, index) {
+      var classes = ['schedule-row'];
+      if (index === 0) classes.push('next');
+      if (event.type === 'afters') classes.push('afters-row');
+      if (event.note) classes.push('holiday-shift');
+      var shift = event.note ? '<span class="shift-note">(' + esc(event.note) + ')</span>' : '';
+      var badge = index === 0 ? '<span class="next-badge">Next</span>' : '';
+      return '<div class="' + classes.join(' ') + '">' +
+        '<span class="schedule-date">' + esc(shortDate(event.date)) + '<span class="schedule-day">' + esc(dayNames[event.date.getDay()]) + shift + '</span></span>' +
+        '<span class="schedule-route">' + esc(event.route) + ' <span class="km">' + esc(event.km) + '</span>' + badge + '</span>' +
+      '</div>';
+    }).join('');
+  }
+  function updateNextRun(event) {
+    var nextRun = document.getElementById('next-run');
+    if (!nextRun || !event) return;
+    nextRun.innerHTML =
+      '<div><div class="eyebrow">Next Run</div><div class="sub">From Small Gods Taproom</div></div>' +
+      '<div><div class="eyebrow">' + esc(longDate(event.date)) + '</div><div class="nr-big">' + esc(shortDate(event.date)) + '</div></div>' +
+      '<div><div class="eyebrow">' + esc(nextEventLabel(event)) + '</div><div class="nr-big">' + esc(event.route) + '</div><div class="sub">' + esc(nextEventSubline(event)) + '</div></div>';
+  }
+  function updateSchedules(events) {
+    Array.prototype.forEach.call(document.querySelectorAll('.schedule-list'), function(list) {
+      list.innerHTML = scheduleRows(events);
+    });
+  }
+  var events = buildEvents(aucklandNow());
+  updateNextRun(events[0]);
+  updateSchedules(events);
+})();
+</script>`;
+}
+
 function renderHtml() {
   return `<!DOCTYPE html>
 <html lang="${attr(data.site.language)}">
@@ -1493,6 +1714,8 @@ function renderHtml() {
   </div>
 </footer>
 
+${clientScheduleScript()}
+
 <script>
 (function() {
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -1678,6 +1901,7 @@ ${siteHeader()}
   ${pageLinks(slug)}
 </main>
 ${siteFooter()}
+${clientScheduleScript()}
 </body>
 </html>`;
 }
