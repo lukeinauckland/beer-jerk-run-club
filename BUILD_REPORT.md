@@ -1,6 +1,6 @@
 # Build Report
 
-Generated: 2026-06-07T07:31:27.898Z
+Generated: 2026-06-08T01:02:14.986Z
 
 ## Site
 
@@ -31,7 +31,7 @@ Generated: 2026-06-07T07:31:27.898Z
 
 - Day/date label: Monday 8 June
 - Date: 8 June
-- Route: Grange Hill
+- Route: Beer Mile
 
 ## Generated SEO / AI Files
 

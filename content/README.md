@@ -37,8 +37,9 @@ Public holidays:
 Route rotation starts from:
 
 ```json
-"anchorMonday": "2026-05-18",
-"anchorRoute": "Grange Hill"
+"anchorMonday": "2026-06-08",
+"anchorRoute": "Beer Mile",
+"rotation": ["Beer Mile", "Grange Hill", "Maungawhau"]
 ```
 
 ## Do Not Add For Launch
@@ -48,4 +49,3 @@ Route rotation starts from:
 - Fake streak names.
 - Fabricated club history.
 - Claims about pace, cancellation history or member numbers unless Luke confirms them.
-

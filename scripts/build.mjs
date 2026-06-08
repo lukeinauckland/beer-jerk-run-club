@@ -133,12 +133,26 @@ function firstSaturday(year, monthIndex) {
 }
 
 const activeRoutes = data.routes.filter(route => route.status === 'active');
+const routeByDisplayOrScheduleName = new Map();
+for (const route of data.routes) {
+  routeByDisplayOrScheduleName.set(route.name, route);
+  routeByDisplayOrScheduleName.set(route.scheduleName || route.name, route);
+}
+const scheduleRouteNames = data.schedule.rotation || activeRoutes.map(route => route.scheduleName || route.name);
+const missingScheduleRoutes = scheduleRouteNames.filter(routeName => !routeByDisplayOrScheduleName.has(routeName));
+if (missingScheduleRoutes.length) {
+  throw new Error(`Schedule rotation contains unknown routes: ${missingScheduleRoutes.join(', ')}`);
+}
+const scheduleRoutes = scheduleRouteNames.map(routeName => routeByDisplayOrScheduleName.get(routeName));
+if (!scheduleRoutes.length) {
+  throw new Error('Schedule rotation has no valid routes.');
+}
 const anchorMonday = parseLocalDate(data.schedule.anchorMonday);
 
 function routeForMonday(monday) {
   const weeks = Math.round((startOfDay(monday) - anchorMonday) / (7 * 24 * 60 * 60 * 1000));
-  const index = ((weeks % activeRoutes.length) + activeRoutes.length) % activeRoutes.length;
-  return activeRoutes[index];
+  const index = ((weeks % scheduleRoutes.length) + scheduleRoutes.length) % scheduleRoutes.length;
+  return scheduleRoutes[index];
 }
 
 function nextMondayFrom(date) {
@@ -1325,7 +1339,7 @@ function instagramPreview() {
 
 function clientScheduleScript() {
   const scheduleData = {
-    routes: activeRoutes.map(route => ({
+    routes: scheduleRoutes.map(route => ({
       name: route.name,
       scheduleName: route.scheduleName || route.name,
       distance: route.distance
@@ -2190,7 +2204,7 @@ ${data.club.opening}
 - Cost: ${data.club.price}
 - Pace: ${data.club.pace}
 - Runner offer: ${data.club.beerDeal}
-- Winter routes: ${activeRoutes.map(route => route.scheduleName || route.name).join(', ')}
+- Winter Monday rotation: ${scheduleRoutes.map(route => route.scheduleName || route.name).join(', ')}
 - Public holidays: ${data.schedule.publicHolidayRule}
 - AFTERS: ${data.afters.summary} First Saturday of the month, meet ${data.afters.meet}, run ${data.afters.start}
 

@@ -58,6 +58,8 @@ Primary search intent:
 - Location: Small Gods Taproom, 2 Shaddock Street, Eden Terrace / Uptown, Auckland.
 - Monday run: bag drop from 5pm, run starts 5:40pm sharp.
 - Usual Monday route distance: 5km.
+- Winter Monday route rotation: Beer Mile, Grange Hill, Maungawhau, then repeat.
+- Domain Loop returns when daylight saving returns.
 - Public holiday Mondays shift to Tuesday.
 - Free. No signup. Just turn up.
 - Runners buy their own drinks.

@@ -39,8 +39,13 @@
     "publicHolidayRule": "When Monday is a public holiday, we shift to Tuesday.",
     "christmasRule": "Check our Instagram around Christmas as we take a little summer break.",
     "winterNote": "Domain Loop comes back when daylight saving returns.",
-    "anchorMonday": "2026-05-18",
-    "anchorRoute": "Grange Hill",
+    "anchorMonday": "2026-06-08",
+    "anchorRoute": "Beer Mile",
+    "rotation": [
+      "Beer Mile",
+      "Grange Hill",
+      "Maungawhau"
+    ],
     "lookaheadCount": 8,
     "publicHolidays": {
       "2026-06-01": "King's Birthday",
