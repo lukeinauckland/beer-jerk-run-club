@@ -19,9 +19,9 @@ let failed = false;
 
 const html = read('index.html');
 const styles = read('styles.css');
-const pageFiles = ['index.html', 'new-runners.html', 'schedule.html', 'routes.html', 'afters.html', '404.html'];
+const pageFiles = ['index.html', 'auckland-run-club.html', 'new-runners.html', 'schedule.html', 'routes.html', 'afters.html', '404.html'];
 const allHtml = pageFiles.map(file => read(file)).join('\n');
-const focusedPages = ['new-runners.html', 'schedule.html', 'routes.html', 'afters.html'];
+const focusedPages = ['auckland-run-club.html', 'new-runners.html', 'schedule.html', 'routes.html', 'afters.html'];
 const pageSources = Object.fromEntries(pageFiles.map(file => [file, read(file)]));
 const robots = read('robots.txt');
 const sitemap = read('sitemap.xml');
@@ -44,6 +44,7 @@ const missingAssets = [...assetRefs, ...dataSrcsetRefs, ...srcsetRefs].filter(re
 
 check('index.html exists', fs.existsSync(path.join(dist, 'index.html')));
 check('404.html exists', fs.existsSync(path.join(dist, '404.html')));
+check('auckland-run-club.html exists', fs.existsSync(path.join(dist, 'auckland-run-club.html')));
 check('new-runners.html exists', fs.existsSync(path.join(dist, 'new-runners.html')));
 check('schedule.html exists', fs.existsSync(path.join(dist, 'schedule.html')));
 check('routes.html exists', fs.existsSync(path.join(dist, 'routes.html')));
@@ -60,8 +61,9 @@ check('OG image exists', fs.existsSync(path.join(dist, 'og-image.png')) || fs.ex
 check('JSON-LD has graph', Array.isArray(jsonLd['@graph']) && jsonLd['@graph'].length >= 5);
 check('focused pages have JSON-LD', focusedJsonLd.every(item => Array.isArray(item['@graph']) && item['@graph'].some(node => node['@type'] === 'WebPage') && item['@graph'].some(node => node['@type'] === 'BreadcrumbList')));
 check('one H1 per public page', ['index.html', ...focusedPages].every(file => (pageSources[file].match(/<h1[\s>]/g) || []).length === 1));
-check('page titles are unique', new Set(['index.html', ...focusedPages].map(file => pageSources[file].match(/<title>(.*?)<\/title>/s)?.[1])).size === 5);
+check('page titles are unique', new Set(['index.html', ...focusedPages].map(file => pageSources[file].match(/<title>(.*?)<\/title>/s)?.[1])).size === 6);
 check('focused pages have canonicals', [
+  ['auckland-run-club.html', '/auckland-run-club'],
   ['new-runners.html', '/new-runners'],
   ['schedule.html', '/schedule'],
   ['routes.html', '/routes'],
@@ -79,18 +81,20 @@ check('robots allows GPTBot', robots.includes('User-agent: GPTBot') && robots.in
 check('robots allows ClaudeBot', robots.includes('User-agent: ClaudeBot'));
 check('robots allows PerplexityBot', robots.includes('User-agent: PerplexityBot'));
 check('sitemap points to canonical', sitemap.includes('<loc>https://beerjerkrunclub.co.nz/</loc>'));
-check('sitemap includes focused pages', ['new-runners', 'schedule', 'routes', 'afters'].every(slug => sitemap.includes(`https://beerjerkrunclub.co.nz/${slug}`)));
+check('sitemap includes focused pages', ['auckland-run-club', 'new-runners', 'schedule', 'routes', 'afters'].every(slug => sitemap.includes(`https://beerjerkrunclub.co.nz/${slug}`)));
 check('llms has search intent', llms.includes('Auckland running club') && llms.includes('beginner friendly run club Auckland') && llms.includes('social run club Auckland'));
 check('facts has search terms', Array.isArray(facts.searchTerms) && facts.searchTerms.includes('Auckland running club') && facts.searchTerms.includes('beginner friendly run club Auckland'));
-check('llms links focused pages', ['new-runners', 'schedule', 'routes', 'afters'].every(slug => llms.includes(`https://beerjerkrunclub.co.nz/${slug}`)));
+check('llms links focused pages', ['auckland-run-club', 'new-runners', 'schedule', 'routes', 'afters'].every(slug => llms.includes(`https://beerjerkrunclub.co.nz/${slug}`)));
 check('facts has correct domain', facts.url === 'https://beerjerkrunclub.co.nz');
-check('facts lists focused pages', Array.isArray(facts.pages) && facts.pages.length === 4);
+check('facts lists focused pages', Array.isArray(facts.pages) && facts.pages.length === 5);
 check('homepage title targets social running club', html.includes('<title>Beer Jerk Run Club Auckland | Free Social Running Club</title>'));
+check('Auckland run club page targets generic query', pageSources['auckland-run-club.html'].includes('<title>Auckland Run Club | Free Monday 5km Social Run</title>') && pageSources['auckland-run-club.html'].includes('Looking for an Auckland run club?'));
 check('new runners page targets beginners', pageSources['new-runners.html'].includes('<title>Beginner Friendly Run Club Auckland | Beer Jerk Run Club</title>'));
+check('homepage links Auckland run club page', html.includes('href="/auckland-run-club"'));
 check('homepage nav uses in-page anchors', ['#new-here', '#schedule', '#routes', '#afters'].every(anchor => html.includes(`href="${anchor}"`)));
 check('homepage removed old quick actions', !html.includes('class="quick-actions"') && !html.includes('First Time?'));
 check('schedule appears before wall on homepage', html.indexOf('id="schedule"') > -1 && html.indexOf('id="wall"') > -1 && html.indexOf('id="schedule"') < html.indexOf('id="wall"'));
-check('internal page links have generated files', [...allHtml.matchAll(/href="\/(new-runners|schedule|routes|afters)"/g)].every(match => fs.existsSync(path.join(dist, `${match[1]}.html`))));
+check('internal page links have generated files', [...allHtml.matchAll(/href="\/(auckland-run-club|new-runners|schedule|routes|afters)"/g)].every(match => fs.existsSync(path.join(dist, `${match[1]}.html`))));
 check('manifest has icons', Array.isArray(manifest.icons) && manifest.icons.length >= 2);
 check('HTML uses responsive images', html.includes('srcset='));
 check('HTML has image dimensions', /<img[^>]+ width="\d+" height="\d+"/.test(html));

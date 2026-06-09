@@ -77,6 +77,7 @@ Launch includes:
 
 - static HTML pages
 - homepage
+- focused SEO page: `/auckland-run-club`
 - focused SEO pages: `/new-runners`, `/schedule`, `/routes`, `/afters`
 - `robots.txt`
 - `sitemap.xml`

@@ -24,7 +24,7 @@ function dirSize(dir) {
   return total;
 }
 
-const pages = ['index.html', 'new-runners.html', 'schedule.html', 'routes.html', 'afters.html', '404.html'];
+const pages = ['index.html', 'auckland-run-club.html', 'new-runners.html', 'schedule.html', 'routes.html', 'afters.html', '404.html'];
 const assets = fs.readdirSync(path.join(dist, 'assets'));
 const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
 const nextRunSection = html.match(/<section class="next-run"[\s\S]*?<\/section>/)?.[0] || '';

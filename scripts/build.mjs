@@ -1713,6 +1713,7 @@ function renderHtml() {
       <h5>- Find Us</h5>
       <a href="${attr(data.links.instagram)}" target="_blank" rel="noopener">Instagram</a>
       <a href="${attr(data.links.strava)}" target="_blank" rel="noopener">Strava Club</a>
+      <a href="/auckland-run-club">Auckland Run Club</a>
       <a href="${attr(data.links.beerJerk)}" target="_blank" rel="noopener">Beer Jerk</a>
       <a href="${attr(data.links.smallGods)}" target="_blank" rel="noopener">Small Gods</a>
     </div>
@@ -1863,6 +1864,7 @@ function siteFooter() {
       <h5>- Find Us</h5>
       <a href="${attr(data.links.instagram)}" target="_blank" rel="noopener">Instagram</a>
       <a href="${attr(data.links.strava)}" target="_blank" rel="noopener">Strava Club</a>
+      <a href="/auckland-run-club">Auckland Run Club</a>
       <a href="${attr(data.links.beerJerk)}" target="_blank" rel="noopener">Beer Jerk</a>
       <a href="${attr(data.links.smallGods)}" target="_blank" rel="noopener">Small Gods</a>
     </div>
@@ -1881,6 +1883,7 @@ function siteFooter() {
 
 function pageLinks(currentSlug = '') {
   const pages = [
+    { slug: 'auckland-run-club', label: 'Auckland Run Club', eyebrow: 'Find Us' },
     { slug: 'new-runners', label: 'New Runners', eyebrow: 'Start' },
     { slug: 'schedule', label: 'Schedule', eyebrow: 'Next Run' },
     { slug: 'routes', label: 'Routes', eyebrow: 'Maps' },
@@ -1918,6 +1921,30 @@ ${siteFooter()}
 ${clientScheduleScript()}
 </body>
 </html>`;
+}
+
+function renderAucklandRunClubPage() {
+  return simplePage({
+    slug: 'auckland-run-club',
+    title: 'Auckland Run Club | Free Monday 5km Social Run',
+    description: 'Looking for an Auckland run club? Beer Jerk Run Club is a free Monday 5km social run from Small Gods Taproom in Eden Terrace, Auckland.',
+    heading: 'Auckland Run Club',
+    intro: `Looking for an Auckland run club? ${data.site.name} is a free weekly social run in Auckland where everyone is welcome. We meet at ${data.location.name} in Eden Terrace / Uptown on Monday nights, run 5km, then stick around for a drink.`,
+    body: `<section class="strip" aria-label="Auckland run club facts">
+      <article class="strip-item"><div class="eyebrow muted">Where</div><h2>Eden Terrace<br>Uptown</h2><p>${esc(data.location.name)}, ${esc(data.location.street)}, Auckland. ${esc(data.club.parkingNote)}</p></article>
+      <article class="strip-item"><div class="eyebrow muted">When</div><h2>Mondays<br>${esc(data.schedule.runStart)}</h2><p>Bag drop from ${esc(data.schedule.bagDrop)}. ${esc(data.schedule.publicHolidayRule)}</p></article>
+      <article class="strip-item"><div class="eyebrow muted">Run</div><h2>5km<br>Social</h2><p>${esc(data.club.pace)} ${esc(data.club.newRunnerNote)}</p></article>
+      <article class="strip-item beer-card"><div class="eyebrow">After</div><h2>$10<br>Beers</h2><p>${esc(data.club.beerDeal)} Soft drinks, cider, wine and AF beers are there too.</p></article>
+    </section>
+    <section class="section">
+      <div class="section-head plain"><h2 class="section-title">What To Expect</h2></div>
+      <p class="content-copy">${esc(data.club.audience)} ${esc(data.club.bagDropNote)} ${esc(data.club.price)} You do not need to sign up or message first.</p>
+    </section>
+    <section class="section schedule">
+      <div class="section-head plain"><h2 class="section-title">Next Runs</h2></div>
+      <div class="schedule-list">${scheduleRows()}</div>
+    </section>`
+  });
 }
 
 function renderNewRunnersPage() {
@@ -2063,6 +2090,7 @@ function writeText(file, text) {
 writeText('index.html', renderHtml());
 writeText('styles.css', styles());
 writeText('404.html', render404());
+writeText('auckland-run-club.html', renderAucklandRunClubPage());
 writeText('new-runners.html', renderNewRunnersPage());
 writeText('schedule.html', renderSchedulePage());
 writeText('routes.html', renderRoutesPage());
@@ -2117,6 +2145,7 @@ writeText('facts.json', JSON.stringify({
   ],
   links: data.links,
   pages: [
+    { title: 'Auckland Run Club', url: `${siteUrl}/auckland-run-club` },
     { title: 'New Runners', url: `${siteUrl}/new-runners` },
     { title: 'Schedule', url: `${siteUrl}/schedule` },
     { title: 'Routes', url: `${siteUrl}/routes` },
@@ -2167,6 +2196,12 @@ writeText('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>${siteUrl}/auckland-run-club</loc>
+    <lastmod>${isoDate(now)}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc>${siteUrl}/new-runners</loc>
     <lastmod>${isoDate(now)}</lastmod>
     <changefreq>monthly</changefreq>
@@ -2211,6 +2246,7 @@ ${data.club.opening}
 ## Important URLs
 
 - Website: ${siteUrl}/
+- Auckland run club: ${siteUrl}/auckland-run-club
 - New runners: ${siteUrl}/new-runners
 - Schedule: ${siteUrl}/schedule
 - Routes: ${siteUrl}/routes

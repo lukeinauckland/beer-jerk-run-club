@@ -1,6 +1,6 @@
 # Build Report
 
-Generated: 2026-06-08T01:02:14.986Z
+Generated: 2026-06-09T01:40:34.417Z
 
 ## Site
 
@@ -11,7 +11,7 @@ Generated: 2026-06-08T01:02:14.986Z
 
 ## Current Build
 
-- Total dist size: 5815KB
+- Total dist size: 5832KB
 - Asset folder size: 5306KB
 - Asset count: 44
 - Homepage size: 35KB
@@ -21,6 +21,7 @@ Generated: 2026-06-08T01:02:14.986Z
 ## Pages
 
 - / (35KB)
+- /auckland-run-club (17KB)
 - /new-runners (16KB)
 - /schedule (15KB)
 - /routes (15KB)
@@ -29,9 +30,9 @@ Generated: 2026-06-08T01:02:14.986Z
 
 ## Next Run Snapshot
 
-- Day/date label: Monday 8 June
-- Date: 8 June
-- Route: Beer Mile
+- Day/date label: Monday 15 June
+- Date: 15 June
+- Route: Grange Hill
 
 ## Generated SEO / AI Files
 
