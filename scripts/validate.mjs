@@ -19,15 +19,16 @@ let failed = false;
 
 const html = read('index.html');
 const styles = read('styles.css');
-const pageFiles = ['index.html', 'auckland-run-club.html', 'new-runners.html', 'schedule.html', 'routes.html', 'afters.html', '404.html'];
+const pageFiles = ['index.html', 'new-runners.html', 'schedule.html', 'routes.html', 'afters.html', '404.html'];
 const allHtml = pageFiles.map(file => read(file)).join('\n');
-const focusedPages = ['auckland-run-club.html', 'new-runners.html', 'schedule.html', 'routes.html', 'afters.html'];
+const focusedPages = ['new-runners.html', 'schedule.html', 'routes.html', 'afters.html'];
 const pageSources = Object.fromEntries(pageFiles.map(file => [file, read(file)]));
 const robots = read('robots.txt');
 const sitemap = read('sitemap.xml');
 const llms = read('llms.txt');
 const facts = JSON.parse(read('facts.json'));
 const manifest = JSON.parse(read('site.webmanifest'));
+const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
 const jsonLd = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)?.[1] || '{}');
 const sportsEvent = jsonLd['@graph']?.find(item => item['@type'] === 'SportsEvent');
 const structuredStartDate = sportsEvent?.startDate || '';
@@ -53,7 +54,7 @@ const missingAssets = [...assetRefs, ...dataSrcsetRefs, ...srcsetRefs].filter(re
 
 check('index.html exists', fs.existsSync(path.join(dist, 'index.html')));
 check('404.html exists', fs.existsSync(path.join(dist, '404.html')));
-check('auckland-run-club.html exists', fs.existsSync(path.join(dist, 'auckland-run-club.html')));
+check('retired Auckland page is not generated', !fs.existsSync(path.join(dist, 'auckland-run-club.html')));
 check('new-runners.html exists', fs.existsSync(path.join(dist, 'new-runners.html')));
 check('schedule.html exists', fs.existsSync(path.join(dist, 'schedule.html')));
 check('routes.html exists', fs.existsSync(path.join(dist, 'routes.html')));
@@ -72,16 +73,15 @@ check('JSON-LD event is current', structuredStartDate.slice(0, 10) >= aucklandTo
 check('JSON-LD event uses Auckland offset', /\+(12|13):00$/.test(structuredStartDate));
 check('focused pages have JSON-LD', focusedJsonLd.every(item => Array.isArray(item['@graph']) && item['@graph'].some(node => node['@type'] === 'WebPage') && item['@graph'].some(node => node['@type'] === 'BreadcrumbList')));
 check('one H1 per public page', ['index.html', ...focusedPages].every(file => (pageSources[file].match(/<h1[\s>]/g) || []).length === 1));
-check('page titles are unique', new Set(['index.html', ...focusedPages].map(file => pageSources[file].match(/<title>(.*?)<\/title>/s)?.[1])).size === 6);
+check('page titles are unique', new Set(['index.html', ...focusedPages].map(file => pageSources[file].match(/<title>(.*?)<\/title>/s)?.[1])).size === 5);
 check('focused pages have canonicals', [
-  ['auckland-run-club.html', '/auckland-run-club'],
   ['new-runners.html', '/new-runners'],
   ['schedule.html', '/schedule'],
   ['routes.html', '/routes'],
   ['afters.html', '/afters']
 ].every(([file, slug]) => pageSources[file].includes(`<link rel="canonical" href="https://beerjerkrunclub.co.nz${slug}">`)));
 check('H1 is static HTML', /<h1>Beer Jerk Run Club <span class="red">Auckland\.<\/span><\/h1>/.test(html));
-check('opening paragraph is static HTML', html.includes('free weekly social run in Auckland'));
+check('opening paragraph is static HTML', html.includes('free Auckland run club with a weekly social 5km'));
 check('schedule is static HTML', /<div class="schedule-list">[\s\S]*schedule-date/.test(html));
 check('FAQ is static HTML', html.includes('Is Beer Jerk Run Club free?'));
 check('$10 beer copy present', html.includes('$10 beers for runners after every run.'));
@@ -92,20 +92,22 @@ check('robots allows GPTBot', robots.includes('User-agent: GPTBot') && robots.in
 check('robots allows ClaudeBot', robots.includes('User-agent: ClaudeBot'));
 check('robots allows PerplexityBot', robots.includes('User-agent: PerplexityBot'));
 check('sitemap points to canonical', sitemap.includes('<loc>https://beerjerkrunclub.co.nz/</loc>'));
-check('sitemap includes focused pages', ['auckland-run-club', 'new-runners', 'schedule', 'routes', 'afters'].every(slug => sitemap.includes(`https://beerjerkrunclub.co.nz/${slug}`)));
+check('sitemap includes focused pages', ['new-runners', 'schedule', 'routes', 'afters'].every(slug => sitemap.includes(`https://beerjerkrunclub.co.nz/${slug}`)));
+check('sitemap excludes retired Auckland page', !sitemap.includes('https://beerjerkrunclub.co.nz/auckland-run-club'));
 check('llms has search intent', llms.includes('Auckland running club') && llms.includes('beginner friendly run club Auckland') && llms.includes('social run club Auckland'));
 check('facts has search terms', Array.isArray(facts.searchTerms) && facts.searchTerms.includes('Auckland running club') && facts.searchTerms.includes('beginner friendly run club Auckland'));
-check('llms links focused pages', ['auckland-run-club', 'new-runners', 'schedule', 'routes', 'afters'].every(slug => llms.includes(`https://beerjerkrunclub.co.nz/${slug}`)));
+check('llms links focused pages', ['new-runners', 'schedule', 'routes', 'afters'].every(slug => llms.includes(`https://beerjerkrunclub.co.nz/${slug}`)));
 check('facts has correct domain', facts.url === 'https://beerjerkrunclub.co.nz');
 check('facts lists focused pages', Array.isArray(facts.pages) && facts.pages.length === 5);
-check('homepage title targets social running club', html.includes('<title>Beer Jerk Run Club Auckland | Free Social Running Club</title>'));
-check('Auckland run club page targets generic query', pageSources['auckland-run-club.html'].includes('<title>Auckland Run Club | Free Monday 5km Social Run</title>') && pageSources['auckland-run-club.html'].includes('Looking for an Auckland run club?'));
+check('homepage title targets Auckland run club query', html.includes('<title>Auckland Run Club | Beer Jerk Run Club</title>'));
 check('new runners page targets beginners', pageSources['new-runners.html'].includes('<title>Beginner Friendly Run Club Auckland | Beer Jerk Run Club</title>'));
-check('homepage links Auckland run club page', html.includes('href="/auckland-run-club"'));
+check('retired Auckland page redirects permanently', vercel.redirects?.some(redirect => redirect.source === '/auckland-run-club' && redirect.destination === '/' && redirect.permanent === true));
+check('public HTML does not link retired Auckland page', !allHtml.includes('href="/auckland-run-club"'));
+check('homepage contextually links focused pages', ['new-runners', 'schedule', 'routes'].every(slug => html.includes(`href="/${slug}"`)));
 check('homepage nav uses in-page anchors', ['#new-here', '#schedule', '#routes', '#afters'].every(anchor => html.includes(`href="${anchor}"`)));
 check('homepage removed old quick actions', !html.includes('class="quick-actions"') && !html.includes('First Time?'));
 check('schedule appears before wall on homepage', html.indexOf('id="schedule"') > -1 && html.indexOf('id="wall"') > -1 && html.indexOf('id="schedule"') < html.indexOf('id="wall"'));
-check('internal page links have generated files', [...allHtml.matchAll(/href="\/(auckland-run-club|new-runners|schedule|routes|afters)"/g)].every(match => fs.existsSync(path.join(dist, `${match[1]}.html`))));
+check('internal page links have generated files', [...allHtml.matchAll(/href="\/(new-runners|schedule|routes|afters)"/g)].every(match => fs.existsSync(path.join(dist, `${match[1]}.html`))));
 check('manifest has icons', Array.isArray(manifest.icons) && manifest.icons.length >= 2);
 check('HTML uses responsive images', html.includes('srcset='));
 check('HTML has image dimensions', /<img[^>]+ width="\d+" height="\d+"/.test(html));

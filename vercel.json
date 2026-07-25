@@ -3,6 +3,18 @@
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/auckland-run-club",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/auckland-run-club.html",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

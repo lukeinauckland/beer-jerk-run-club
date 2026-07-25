@@ -35,6 +35,12 @@ Added:
 
 Reason: these are clean search and AI targets, without adding a CMS.
 
+### Make The Homepage The Auckland Run Club Search Page
+
+The homepage is the single canonical target for the broad `Auckland run club` search intent.
+
+The former `/auckland-run-club` page repeated the homepage and was not indexed. It now permanently redirects to `/` so links and search signals collect on one useful page.
+
 ### Move Photos Below Practical Info
 
 The earlier mockup put social proof very high. For launch, that is less important than schedule, routes and first-timer confidence.

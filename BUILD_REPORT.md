@@ -1,6 +1,6 @@
 # Build Report
 
-Generated: 2026-07-25T21:22:30.111Z
+Generated: 2026-07-25T22:15:53.448Z
 
 ## Site
 
@@ -11,20 +11,19 @@ Generated: 2026-07-25T21:22:30.111Z
 
 ## Current Build
 
-- Total dist size: 5821KB
+- Total dist size: 5804KB
 - Asset folder size: 5293KB
 - Asset count: 44
 - Homepage size: 36KB
-- CSS size: 21KB
+- CSS size: 22KB
 - OG image size: 321KB
 
 ## Pages
 
 - / (36KB)
-- /auckland-run-club (17KB)
 - /new-runners (16KB)
 - /schedule (15KB)
-- /routes (16KB)
+- /routes (15KB)
 - /afters (14KB)
 - /404 (2KB)
 

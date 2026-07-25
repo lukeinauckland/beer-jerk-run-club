@@ -77,7 +77,7 @@ Launch includes:
 
 - static HTML pages
 - homepage
-- focused SEO page: `/auckland-run-club`
+- homepage targeting the broad `Auckland run club` search intent
 - focused SEO pages: `/new-runners`, `/schedule`, `/routes`, `/afters`
 - `robots.txt`
 - `sitemap.xml`
@@ -123,6 +123,7 @@ The Streak Board can be mentioned in FAQ only:
 - Main domain should be non-www:
   - `https://beerjerkrunclub.co.nz`
   - `www` should redirect to non-www.
+- The former `/auckland-run-club` page permanently redirects to the homepage. Keep the homepage as the single canonical target for the broad Auckland run club query.
 
 ## Common Pitfalls
 
@@ -135,3 +136,4 @@ The Streak Board can be mentioned in FAQ only:
 - Do not write “no drop”.
 - Do not add “shot on Ricoh”.
 - Do not fabricate names, stats, history, or club mythology.
+- Do not recreate a separate thin `/auckland-run-club` page or split the broad search intent away from the homepage.
