@@ -45,12 +45,14 @@ function isoDate(date) {
 }
 
 function timezoneOffset(date) {
-  const offset = -date.getTimezoneOffset();
-  const sign = offset >= 0 ? '+' : '-';
-  const abs = Math.abs(offset);
-  const hours = String(Math.floor(abs / 60)).padStart(2, '0');
-  const minutes = String(abs % 60).padStart(2, '0');
-  return `${sign}${hours}:${minutes}`;
+  const middayUtc = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12));
+  const zoneName = new Intl.DateTimeFormat('en-NZ', {
+    timeZone: 'Pacific/Auckland',
+    timeZoneName: 'longOffset'
+  }).formatToParts(middayUtc).find(part => part.type === 'timeZoneName')?.value || '';
+  const match = zoneName.match(/^GMT([+-])(\d{1,2})(?::(\d{2}))?$/);
+  if (!match) throw new Error(`Could not determine Auckland timezone offset for ${dateKey(date)}.`);
+  return `${match[1]}${match[2].padStart(2, '0')}:${match[3] || '00'}`;
 }
 
 function dateKey(date) {

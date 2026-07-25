@@ -29,6 +29,15 @@ const llms = read('llms.txt');
 const facts = JSON.parse(read('facts.json'));
 const manifest = JSON.parse(read('site.webmanifest'));
 const jsonLd = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)?.[1] || '{}');
+const sportsEvent = jsonLd['@graph']?.find(item => item['@type'] === 'SportsEvent');
+const structuredStartDate = sportsEvent?.startDate || '';
+const aucklandTodayParts = Object.fromEntries(new Intl.DateTimeFormat('en-NZ', {
+  timeZone: 'Pacific/Auckland',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit'
+}).formatToParts(new Date()).filter(part => part.type !== 'literal').map(part => [part.type, part.value]));
+const aucklandToday = `${aucklandTodayParts.year}-${aucklandTodayParts.month}-${aucklandTodayParts.day}`;
 const focusedJsonLd = focusedPages.map(file => {
   const source = read(file);
   return JSON.parse(source.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)?.[1] || '{}');
@@ -59,6 +68,8 @@ check('favicon exists', fs.existsSync(path.join(dist, 'favicon-32.png')));
 check('apple touch icon exists', fs.existsSync(path.join(dist, 'apple-touch-icon.png')));
 check('OG image exists', fs.existsSync(path.join(dist, 'og-image.png')) || fs.existsSync(path.join(dist, 'og-image.svg')));
 check('JSON-LD has graph', Array.isArray(jsonLd['@graph']) && jsonLd['@graph'].length >= 5);
+check('JSON-LD event is current', structuredStartDate.slice(0, 10) >= aucklandToday);
+check('JSON-LD event uses Auckland offset', /\+(12|13):00$/.test(structuredStartDate));
 check('focused pages have JSON-LD', focusedJsonLd.every(item => Array.isArray(item['@graph']) && item['@graph'].some(node => node['@type'] === 'WebPage') && item['@graph'].some(node => node['@type'] === 'BreadcrumbList')));
 check('one H1 per public page', ['index.html', ...focusedPages].every(file => (pageSources[file].match(/<h1[\s>]/g) || []).length === 1));
 check('page titles are unique', new Set(['index.html', ...focusedPages].map(file => pageSources[file].match(/<title>(.*?)<\/title>/s)?.[1])).size === 6);

@@ -85,6 +85,7 @@ Launch includes:
 - `facts.json`
 - JSON-LD structured data
 - responsive images
+- daily GitHub workflow that rebuilds the static schedule through a Vercel deploy hook
 
 Launch excludes:
 
@@ -94,7 +95,6 @@ Launch excludes:
 - CMS
 - live Instagram feed
 - GPX route map replacement
-- GitHub scheduled workflow
 
 The Streak Board can be mentioned in FAQ only:
 
@@ -117,6 +117,7 @@ The Streak Board can be mentioned in FAQ only:
 - GitHub repo: `lukeinauckland/beer-jerk-run-club`
 - Hosting: Vercel
 - Vercel Web Analytics is enabled. The tracking bootstrap is generated into every public page by `analyticsScripts()` in `scripts/build.mjs`.
+- `.github/workflows/refresh-schedule.yml` triggers the production deploy hook daily so static schedule and search metadata stay current.
 - Live domain: `beerjerkrunclub.co.nz`
 - DNS lives at Hover.
 - Main domain should be non-www:
