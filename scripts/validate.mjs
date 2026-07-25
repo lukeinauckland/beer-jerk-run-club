@@ -104,6 +104,10 @@ check('HTML links manifest', html.includes('<link rel="manifest" href="/site.web
 check('HTML links stylesheet', html.includes('<link rel="stylesheet" href="/styles.css">'));
 check('HTML links favicon', html.includes('<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">'));
 check('HTML references OG image', html.includes('<meta property="og:image" content="https://beerjerkrunclub.co.nz/og-image.png">'));
+check('all public pages include Vercel Web Analytics', pageFiles.every(file => {
+  const page = pageSources[file];
+  return page.includes('window.va = window.va || function') && page.includes('src="/_vercel/insights/script.js"');
+}));
 check('no missing assets', missingAssets.length === 0);
 check('no Meetup in live HTML', !/meetup/i.test(html));
 check('no Half ticket link', !/beer-jerk-run-club-half-marathon-ticket/i.test(html));

@@ -1,6 +1,6 @@
 # Build Report
 
-Generated: 2026-06-09T01:40:34.417Z
+Generated: 2026-07-25T10:14:53.317Z
 
 ## Site
 
@@ -11,27 +11,27 @@ Generated: 2026-06-09T01:40:34.417Z
 
 ## Current Build
 
-- Total dist size: 5832KB
-- Asset folder size: 5306KB
+- Total dist size: 5821KB
+- Asset folder size: 5293KB
 - Asset count: 44
-- Homepage size: 35KB
+- Homepage size: 36KB
 - CSS size: 21KB
 - OG image size: 321KB
 
 ## Pages
 
-- / (35KB)
+- / (36KB)
 - /auckland-run-club (17KB)
 - /new-runners (16KB)
 - /schedule (15KB)
-- /routes (15KB)
-- /afters (13KB)
+- /routes (16KB)
+- /afters (14KB)
 - /404 (2KB)
 
 ## Next Run Snapshot
 
-- Day/date label: Monday 15 June
-- Date: 15 June
+- Day/date label: Monday 27 July
+- Date: 27 July
 - Route: Grange Hill
 
 ## Generated SEO / AI Files

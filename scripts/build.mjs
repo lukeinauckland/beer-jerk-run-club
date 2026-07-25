@@ -1524,6 +1524,13 @@ function clientScheduleScript() {
 </script>`;
 }
 
+function analyticsScripts() {
+  return `<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>`;
+}
+
 function renderHtml() {
   return `<!DOCTYPE html>
 <html lang="${attr(data.site.language)}">
@@ -1556,6 +1563,7 @@ function renderHtml() {
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
 <script type="application/ld+json">${JSON.stringify(jsonLd())}</script>
+${analyticsScripts()}
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
@@ -1825,7 +1833,8 @@ function pageHead({ title, description, canonical, robots = 'index, follow, max-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles.css">${jsonLdData ? `\n<script type="application/ld+json">${JSON.stringify(jsonLdData)}</script>` : ''}`;
+<link rel="stylesheet" href="/styles.css">${jsonLdData ? `\n<script type="application/ld+json">${JSON.stringify(jsonLdData)}</script>` : ''}
+${analyticsScripts()}`;
 }
 
 function siteHeader() {
@@ -2030,6 +2039,7 @@ function render404() {
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+${analyticsScripts()}
 <style>
   :root { --red:#EC1C24; --ink:#111; --paper:#F5F2EA; --grey:#636363; }
   * { box-sizing:border-box; margin:0; padding:0; }

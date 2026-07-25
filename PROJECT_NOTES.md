@@ -116,6 +116,7 @@ The Streak Board can be mentioned in FAQ only:
 
 - GitHub repo: `lukeinauckland/beer-jerk-run-club`
 - Hosting: Vercel
+- Vercel Web Analytics is enabled. The tracking bootstrap is generated into every public page by `analyticsScripts()` in `scripts/build.mjs`.
 - Live domain: `beerjerkrunclub.co.nz`
 - DNS lives at Hover.
 - Main domain should be non-www:
