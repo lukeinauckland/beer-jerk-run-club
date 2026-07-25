@@ -9,5 +9,8 @@
     "report": "node scripts/report.mjs",
     "check": "npm run build && npm run validate && npm run report",
     "preview": "node scripts/serve-preview.mjs"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
   }
 }
