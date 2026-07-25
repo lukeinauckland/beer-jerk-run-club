@@ -1533,6 +1533,10 @@ function analyticsScripts() {
 <script defer src="/_vercel/insights/script.js"></script>`;
 }
 
+function webmasterVerificationMeta() {
+  return '<meta name="msvalidate.01" content="78B1B33393FB501253413B2FD38F16F7">';
+}
+
 function renderHtml() {
   return `<!DOCTYPE html>
 <html lang="${attr(data.site.language)}">
@@ -1542,6 +1546,7 @@ function renderHtml() {
 <title>${esc(data.site.title)}</title>
 <meta name="description" content="${attr(data.site.description)}">
 <meta name="robots" content="index, follow, max-image-preview:large">
+${webmasterVerificationMeta()}
 <link rel="canonical" href="${siteUrl}/">
 <meta property="og:title" content="${attr(data.site.name)} Auckland">
 <meta property="og:description" content="${attr(data.site.description)}">
@@ -1821,6 +1826,7 @@ function pageHead({ title, description, canonical, robots = 'index, follow, max-
 <title>${esc(title)}</title>
 <meta name="description" content="${attr(description)}">
 <meta name="robots" content="${attr(robots)}">
+${webmasterVerificationMeta()}
 <link rel="canonical" href="${attr(canonical)}">
 <meta property="og:title" content="${attr(title)}">
 <meta property="og:description" content="${attr(description)}">
@@ -2039,6 +2045,7 @@ function render404() {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Page Not Found | ${esc(data.site.name)}</title>
 <meta name="robots" content="noindex">
+${webmasterVerificationMeta()}
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 ${analyticsScripts()}

@@ -119,6 +119,9 @@ check('all public pages include Vercel Web Analytics', pageFiles.every(file => {
   const page = pageSources[file];
   return page.includes('window.va = window.va || function') && page.includes('src="/_vercel/insights/script.js"');
 }));
+check('all public pages include Bing verification', pageFiles.every(file =>
+  pageSources[file].includes('<meta name="msvalidate.01" content="78B1B33393FB501253413B2FD38F16F7">')
+));
 check('no missing assets', missingAssets.length === 0);
 check('no Meetup in live HTML', !/meetup/i.test(html));
 check('no Half ticket link', !/beer-jerk-run-club-half-marathon-ticket/i.test(html));
