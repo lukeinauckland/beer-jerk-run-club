@@ -77,12 +77,12 @@ Full schedule, routes and new runner info:
 https://beerjerkrunclub.co.nz
 ```
 
-## Beer Jerk Shopify Link
+## Beer Jerk About Page
 
 Add a visible link from:
 
 ```text
-https://www.beerjerk.co.nz/run-club
+https://www.beerjerk.co.nz/pages/about-us
 ```
 
 To:
@@ -98,6 +98,12 @@ Beer Jerk Run Club Auckland
 ```
 
 ## Small Gods Link Request
+
+Page to update:
+
+```text
+https://www.smallgods.co.nz/taproom
+```
 
 Short version to send:
 

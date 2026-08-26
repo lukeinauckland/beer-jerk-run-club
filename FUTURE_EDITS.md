@@ -1,5 +1,59 @@
 # Future Edits
 
+## Remaining Improvements
+
+These are useful improvements, not launch blockers. Tackle them in this order.
+
+### 1. Add Mobile Navigation
+
+**Priority:** Medium
+
+The desktop navigation is hidden below 720px, leaving mobile visitors without a
+quick route to the schedule, routes, new-runner guide or AFTERS page.
+
+**Done when:** Mobile has a compact, accessible menu that works with touch and
+keyboard controls, does not cover page content and has been checked at common
+phone widths.
+
+### 2. Make Schedule Refreshing More Resilient
+
+**Priority:** Medium
+
+The daily GitHub Action currently keeps the static schedule and search metadata
+fresh. Scheduled workflows in an inactive public repository can eventually be
+disabled, so the deployment needs a backup or a move to a durable scheduler.
+
+**Done when:** A missed GitHub schedule cannot leave the public schedule stale,
+and a failed refresh produces a visible alert.
+
+### 3. Make Sitemap Dates Accurate
+
+**Priority:** Low
+
+The daily build currently gives every sitemap entry the build date even when the
+page content has not meaningfully changed. Remove those dates or derive them from
+real content changes.
+
+**Done when:** `<lastmod>` only changes after a meaningful page update, or is
+omitted where no trustworthy modification date exists.
+
+### 4. Review Search Performance After Enough Data Accumulates
+
+**Priority:** Low, but useful for marketing decisions
+
+Use Google Search Console, Bing Webmaster Tools and Vercel Analytics to review
+queries, landing pages, click-through rate and mobile traffic after four to six
+weeks. Prioritise improvements supported by real search behaviour.
+
+**Done when:** The review records the strongest queries, pages gaining traction
+and the next one or two content or backlink actions.
+
+### External Listing Cleanup
+
+Luke is updating the Beer Jerk and Small Gods pages separately. Keep the public
+details aligned with `PROJECT_NOTES.md`: bag drop from 5pm, run starts 5:40pm
+sharp, and link back to `https://beerjerkrunclub.co.nz`.
+
 Most regular changes happen in:
 
 ```text
