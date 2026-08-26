@@ -1553,7 +1553,8 @@ function analyticsScripts() {
 }
 
 function webmasterVerificationMeta() {
-  return '<meta name="msvalidate.01" content="78B1B33393FB501253413B2FD38F16F7">';
+  return `<meta name="msvalidate.01" content="78B1B33393FB501253413B2FD38F16F7">
+<meta name="google-site-verification" content="UC-KgUE48SNVWyiCzS-H0ECqgS60wDOOdEV0wLKfJN0">`;
 }
 
 function renderHtml() {
