@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import sharp from 'sharp';
 import { isChristmasBreakDate, isSummerMonday, routeNameForMonday, shiftedRunForMonday } from './schedule.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -199,7 +200,19 @@ function buildEvents(date) {
 const events = buildEvents(now);
 const nextEvent = events[0];
 
-function optimiseOrCopyAsset(file) {
+function rasterOutput(pipeline, ext) {
+  if (ext === '.jpg' || ext === '.jpeg') {
+    return pipeline.jpeg({ quality: 78, progressive: true, mozjpeg: true });
+  }
+  return pipeline.png({ compressionLevel: 9, adaptiveFiltering: true });
+}
+
+async function resizeRaster(from, ext, resize) {
+  const pipeline = sharp(from).rotate().resize(resize);
+  return rasterOutput(pipeline, ext).toBuffer({ resolveWithObject: true });
+}
+
+async function optimiseOrCopyAsset(file) {
   const from = path.join(sourceAssets, file);
   const to = path.join(distAssets, file);
   if (!fs.existsSync(from)) throw new Error(`Missing asset: ${file}`);
@@ -219,62 +232,48 @@ function optimiseOrCopyAsset(file) {
     'embedded_10.jpg': 1400
   };
   const maxWidth = maxWidths[file] || (file.startsWith('embedded_') ? 900 : 1200);
-
-  try {
-    const tmp = `${to}.tmp${ext}`;
-    execFileSync('sips', ['-Z', String(maxWidth), '-s', 'formatOptions', '72', from, '--out', tmp], { stdio: 'ignore' });
-    const originalSize = fs.statSync(from).size;
-    const optimisedSize = fs.statSync(tmp).size;
-    if (optimisedSize < originalSize) {
-      fs.renameSync(tmp, to);
-    } else {
-      fs.rmSync(tmp, { force: true });
-      fs.copyFileSync(from, to);
-    }
-  } catch {
+  const { data: optimised } = await resizeRaster(from, ext, { width: maxWidth, withoutEnlargement: true });
+  if (optimised.length < fs.statSync(from).size) {
+    fs.writeFileSync(to, optimised);
+  } else {
     fs.copyFileSync(from, to);
   }
 }
 
-function responsiveName(file, width) {
+function responsiveName(file, width, hash) {
   const ext = path.extname(file);
   const base = path.basename(file, ext);
-  return `${base}-${width}${ext}`;
+  return `${base}-${width}-${hash}${ext}`;
 }
 
 function imageDimensions(file) {
   if (dimensionCache.has(file)) return dimensionCache.get(file);
-  let width = imageDimensionManifest[file]?.width || 0;
-  let height = imageDimensionManifest[file]?.height || 0;
-  try {
-    const output = execFileSync('sips', ['-g', 'pixelWidth', '-g', 'pixelHeight', path.join(sourceAssets, file)], { encoding: 'utf8' });
-    width = Number(output.match(/pixelWidth:\s*(\d+)/)?.[1] || width);
-    height = Number(output.match(/pixelHeight:\s*(\d+)/)?.[1] || height);
-  } catch {
-    // Vercel runs on Linux, where macOS sips is unavailable. Use the committed manifest there.
-  }
+  const width = imageDimensionManifest[file]?.width || 0;
+  const height = imageDimensionManifest[file]?.height || 0;
   const dimensions = { width, height };
   dimensionCache.set(file, dimensions);
   return dimensions;
 }
 
-function generateResponsiveAsset(file, widths) {
+async function generateResponsiveAsset(file, widths) {
   const from = path.join(sourceAssets, file);
   if (!fs.existsSync(from) || !/\.(jpe?g|png)$/i.test(file)) return;
 
   const { width: originalWidth } = imageDimensions(file);
+  if (!originalWidth) throw new Error(`Missing image dimensions for responsive asset: ${file}`);
+  const ext = path.extname(file).toLowerCase();
   const variants = [];
 
   for (const width of widths.filter(w => w <= originalWidth)) {
-    const outFile = responsiveName(file, width);
-    const outPath = path.join(distAssets, outFile);
-    try {
-      execFileSync('sips', ['-Z', String(width), '-s', 'formatOptions', '72', from, '--out', outPath], { stdio: 'ignore' });
-      variants.push({ file: outFile, width });
-    } catch {
-      fs.copyFileSync(from, outPath);
-      variants.push({ file: outFile, width });
+    const { data: output, info } = await resizeRaster(from, ext, { width, withoutEnlargement: true });
+    if (info.width !== width) {
+      throw new Error(`Responsive image width mismatch for ${file}: expected ${width}, got ${info.width}`);
     }
+    const hash = createHash('sha256').update(output).digest('hex').slice(0, 12);
+    const outFile = responsiveName(file, width, hash);
+    const outPath = path.join(distAssets, outFile);
+    fs.writeFileSync(outPath, output);
+    variants.push({ file: outFile, width });
   }
 
   if (variants.length) {
@@ -282,18 +281,19 @@ function generateResponsiveAsset(file, widths) {
   }
 }
 
-function writeOgImage() {
+async function writeOgImage() {
   const source = path.join(sourceAssets, 'BJRC_Half_Back.png');
   const pngPath = path.join(dist, data.images.ogGenerated);
-  const tmp = path.join(dist, 'og-image-crop.tmp.png');
-  try {
-    execFileSync('sips', ['--cropToHeightWidth', '1554', '2959', source, '--out', tmp], { stdio: 'ignore' });
-    execFileSync('sips', ['-z', '630', '1200', tmp, '--out', pngPath], { stdio: 'ignore' });
-    fs.rmSync(tmp, { force: true });
-  } catch {
-    fs.rmSync(tmp, { force: true });
-    fs.copyFileSync(source, pngPath);
+  const { data: output, info } = await resizeRaster(source, '.png', {
+    width: 1200,
+    height: 630,
+    fit: 'cover',
+    position: 'centre'
+  });
+  if (info.width !== 1200 || info.height !== 630) {
+    throw new Error(`OG image dimensions must be 1200x630, got ${info.width}x${info.height}`);
   }
+  fs.writeFileSync(pngPath, output);
 }
 
 function responsiveAttrs(file, sizes) {
@@ -333,15 +333,15 @@ const assetSet = new Set([
   ...data.routes.map(route => route.map)
 ]);
 
-for (const file of assetSet) optimiseOrCopyAsset(file);
+for (const file of assetSet) await optimiseOrCopyAsset(file);
 
-data.images.hero.forEach((image, index) => {
-  generateResponsiveAsset(image.file, index === 0 ? [640, 1100, 1500] : [640, 1100]);
-});
-generateResponsiveAsset(data.images.crowd.file, [640, 1100]);
-for (const post of data.images.instagramPreview.posts) generateResponsiveAsset(post.file, [360, 640]);
-for (const file of data.images.wall) generateResponsiveAsset(file, [360, 640]);
-writeOgImage();
+for (const [index, image] of data.images.hero.entries()) {
+  await generateResponsiveAsset(image.file, index === 0 ? [640, 1100, 1500] : [640, 1100]);
+}
+await generateResponsiveAsset(data.images.crowd.file, [640, 1100]);
+for (const post of data.images.instagramPreview.posts) await generateResponsiveAsset(post.file, [360, 640]);
+for (const file of data.images.wall) await generateResponsiveAsset(file, [360, 640]);
+await writeOgImage();
 
 function scheduleRows() {
   return events.map((event, index) => {

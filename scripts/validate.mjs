@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import sharp from 'sharp';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
@@ -44,13 +45,30 @@ const focusedJsonLd = focusedPages.map(file => {
   return JSON.parse(source.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)?.[1] || '{}');
 });
 const assetRefs = [...allHtml.matchAll(/(?:src|href|data-src)="\/?(assets\/[^"]+)"/g)].map(match => match[1]);
-const dataSrcsetRefs = [...allHtml.matchAll(/data-srcset="([^"]+)"/g)]
-  .flatMap(match => match[1].split(',').map(item => item.trim().split(' ')[0]))
-  .filter(ref => ref.startsWith('assets/'));
-const srcsetRefs = [...allHtml.matchAll(/srcset="([^"]+)"/g)]
-  .flatMap(match => match[1].split(',').map(item => item.trim().split(' ')[0]))
-  .filter(ref => ref.startsWith('assets/'));
+function srcsetEntries(attribute) {
+  const pattern = new RegExp(`${attribute}="([^"]+)"`, 'g');
+  return [...allHtml.matchAll(pattern)]
+    .flatMap(match => match[1].split(',').map(item => {
+      const [ref, width] = item.trim().split(/\s+/);
+      return { ref, width: Number(width?.replace(/w$/, '')) };
+    }))
+    .filter(item => item.ref.startsWith('assets/'));
+}
+
+const dataSrcsetEntries = srcsetEntries('data-srcset');
+const srcsetEntriesList = srcsetEntries('srcset');
+const responsiveEntries = [...dataSrcsetEntries, ...srcsetEntriesList];
+const dataSrcsetRefs = dataSrcsetEntries.map(item => item.ref);
+const srcsetRefs = srcsetEntriesList.map(item => item.ref);
 const missingAssets = [...assetRefs, ...dataSrcsetRefs, ...srcsetRefs].filter(ref => !fs.existsSync(path.join(dist, ref)));
+
+const uniqueResponsiveEntries = [...new Map(responsiveEntries.map(item => [item.ref, item])).values()];
+const responsiveMetadata = await Promise.all(uniqueResponsiveEntries.map(async item => {
+  if (!fs.existsSync(path.join(dist, item.ref))) return { ...item, actualWidth: 0 };
+  const metadata = await sharp(path.join(dist, item.ref)).metadata();
+  return { ...item, actualWidth: metadata.width || 0 };
+}));
+const ogMetadata = await sharp(path.join(dist, 'og-image.png')).metadata();
 
 check('index.html exists', fs.existsSync(path.join(dist, 'index.html')));
 check('404.html exists', fs.existsSync(path.join(dist, '404.html')));
@@ -69,6 +87,9 @@ check('site.webmanifest exists', fs.existsSync(path.join(dist, 'site.webmanifest
 check('favicon exists', fs.existsSync(path.join(dist, 'favicon-32.png')));
 check('apple touch icon exists', fs.existsSync(path.join(dist, 'apple-touch-icon.png')));
 check('OG image exists', fs.existsSync(path.join(dist, 'og-image.png')) || fs.existsSync(path.join(dist, 'og-image.svg')));
+check('OG image is exactly 1200x630', ogMetadata.width === 1200 && ogMetadata.height === 630);
+check('responsive image widths match srcset labels', responsiveMetadata.every(item => item.actualWidth === item.width));
+check('responsive image filenames are content-versioned', responsiveMetadata.every(item => /-\d+-[a-f0-9]{12}\.(?:jpe?g|png)$/i.test(item.ref)));
 check('homepage has one JSON-LD block', jsonLdBlocks.length === 1);
 check('JSON-LD has graph', Array.isArray(jsonLd['@graph']) && jsonLd['@graph'].length >= 5);
 check('JSON-LD has WebSite', website?.url === 'https://beerjerkrunclub.co.nz');
