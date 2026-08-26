@@ -44,17 +44,6 @@ function isoDate(date) {
   return dateKey(date);
 }
 
-function timezoneOffset(date) {
-  const middayUtc = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12));
-  const zoneName = new Intl.DateTimeFormat('en-NZ', {
-    timeZone: 'Pacific/Auckland',
-    timeZoneName: 'longOffset'
-  }).formatToParts(middayUtc).find(part => part.type === 'timeZoneName')?.value || '';
-  const match = zoneName.match(/^GMT([+-])(\d{1,2})(?::(\d{2}))?$/);
-  if (!match) throw new Error(`Could not determine Auckland timezone offset for ${dateKey(date)}.`);
-  return `${match[1]}${match[2].padStart(2, '0')}:${match[3] || '00'}`;
-}
-
 function dateKey(date) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -211,7 +200,6 @@ function buildEvents(date) {
 
 const events = buildEvents(now);
 const nextEvent = events[0];
-const nextStructuredRun = events.find(event => event.type === 'monday') || nextEvent;
 
 function optimiseOrCopyAsset(file) {
   const from = path.join(sourceAssets, file);
@@ -408,7 +396,8 @@ function jsonLd() {
         url: siteUrl,
         description: data.club.oneLine,
         foundingDate: data.site.founded,
-        sameAs: [data.links.instagram, data.links.strava, data.links.beerJerk],
+        logo: `${siteUrl}/assets/${data.images.logo}`,
+        sameAs: [data.links.instagram, data.links.strava],
         areaServed: {
           '@type': 'City',
           name: 'Auckland'
@@ -424,14 +413,14 @@ function jsonLd() {
         location: { '@id': placeId }
       },
       {
-        '@type': 'SportsActivityLocation',
+        '@type': 'Place',
         '@id': placeId,
         name: data.location.name,
         url: data.links.smallGods,
         address: {
           '@type': 'PostalAddress',
           streetAddress: data.location.street,
-          addressLocality: data.location.city,
+          addressLocality: data.location.suburb,
           addressRegion: data.location.city,
           addressCountry: data.location.country
         },
@@ -445,7 +434,6 @@ function jsonLd() {
         '@id': nextRunId,
         name: `${data.site.name} Monday Run`,
         description: data.site.description,
-        startDate: `${isoDate(nextStructuredRun.date)}T17:40:00${timezoneOffset(nextStructuredRun.date)}`,
         eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
         eventStatus: 'https://schema.org/EventScheduled',
         isAccessibleForFree: true,

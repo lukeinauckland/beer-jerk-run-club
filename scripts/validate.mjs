@@ -29,16 +29,15 @@ const llms = read('llms.txt');
 const facts = JSON.parse(read('facts.json'));
 const manifest = JSON.parse(read('site.webmanifest'));
 const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
-const jsonLd = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)?.[1] || '{}');
-const sportsEvent = jsonLd['@graph']?.find(item => item['@type'] === 'SportsEvent');
-const structuredStartDate = sportsEvent?.startDate || '';
-const aucklandTodayParts = Object.fromEntries(new Intl.DateTimeFormat('en-NZ', {
-  timeZone: 'Pacific/Auckland',
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit'
-}).formatToParts(new Date()).filter(part => part.type !== 'literal').map(part => [part.type, part.value]));
-const aucklandToday = `${aucklandTodayParts.year}-${aucklandTodayParts.month}-${aucklandTodayParts.day}`;
+const jsonLdBlocks = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)];
+const jsonLd = JSON.parse(jsonLdBlocks[0]?.[1] || '{}');
+const graph = jsonLd['@graph'] || [];
+const website = graph.find(item => item['@type'] === 'WebSite');
+const organization = graph.find(item => Array.isArray(item['@type']) ? item['@type'].includes('Organization') : item['@type'] === 'Organization');
+const place = graph.find(item => item['@type'] === 'Place');
+const sportsEvent = graph.find(item => item['@type'] === 'SportsEvent');
+const schedule = graph.find(item => item['@type'] === 'Schedule');
+const faqPage = graph.find(item => item['@type'] === 'FAQPage');
 const focusedJsonLd = focusedPages.map(file => {
   const source = read(file);
   return JSON.parse(source.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)?.[1] || '{}');
@@ -68,9 +67,16 @@ check('site.webmanifest exists', fs.existsSync(path.join(dist, 'site.webmanifest
 check('favicon exists', fs.existsSync(path.join(dist, 'favicon-32.png')));
 check('apple touch icon exists', fs.existsSync(path.join(dist, 'apple-touch-icon.png')));
 check('OG image exists', fs.existsSync(path.join(dist, 'og-image.png')) || fs.existsSync(path.join(dist, 'og-image.svg')));
+check('homepage has one JSON-LD block', jsonLdBlocks.length === 1);
 check('JSON-LD has graph', Array.isArray(jsonLd['@graph']) && jsonLd['@graph'].length >= 5);
-check('JSON-LD event is current', structuredStartDate.slice(0, 10) >= aucklandToday);
-check('JSON-LD event uses Auckland offset', /\+(12|13):00$/.test(structuredStartDate));
+check('JSON-LD has WebSite', website?.url === 'https://beerjerkrunclub.co.nz');
+check('JSON-LD organization has logo', organization?.logo === 'https://beerjerkrunclub.co.nz/assets/Main.svg');
+check('JSON-LD organization links social profiles', ['https://www.instagram.com/beerjerkrunclub/', 'https://www.strava.com/clubs/beerjerk'].every(url => organization?.sameAs?.includes(url)));
+check('JSON-LD event uses weekly schedule without startDate', sportsEvent?.eventSchedule?.['@id'] === schedule?.['@id'] && !Object.hasOwn(sportsEvent || {}, 'startDate'));
+check('JSON-LD schedule is Monday at 5:40pm Auckland time', schedule?.repeatFrequency === 'P1W' && schedule?.byDay === 'https://schema.org/Monday' && schedule?.startTime === '17:40' && schedule?.scheduleTimezone === 'Pacific/Auckland');
+check('JSON-LD event is free and offline', sportsEvent?.isAccessibleForFree === true && sportsEvent?.eventAttendanceMode === 'https://schema.org/OfflineEventAttendanceMode');
+check('JSON-LD place has full known address', place?.name === 'Small Gods Taproom' && place?.address?.streetAddress === '2 Shaddock Street' && place?.address?.addressLocality === 'Eden Terrace' && place?.address?.addressRegion === 'Auckland' && place?.address?.addressCountry === 'NZ');
+check('JSON-LD FAQ matches visible FAQ', faqPage?.mainEntity?.length === 8 && faqPage.mainEntity.every(item => item['@type'] === 'Question' && item.acceptedAnswer?.['@type'] === 'Answer' && html.includes(item.name) && html.includes(item.acceptedAnswer.text)));
 check('focused pages have JSON-LD', focusedJsonLd.every(item => Array.isArray(item['@graph']) && item['@graph'].some(node => node['@type'] === 'WebPage') && item['@graph'].some(node => node['@type'] === 'BreadcrumbList')));
 check('one H1 per public page', ['index.html', ...focusedPages].every(file => (pageSources[file].match(/<h1[\s>]/g) || []).length === 1));
 check('page titles are unique', new Set(['index.html', ...focusedPages].map(file => pageSources[file].match(/<title>(.*?)<\/title>/s)?.[1])).size === 5);
