@@ -46,16 +46,27 @@
       "Grange Hill",
       "Maungawhau"
     ],
+    "summerRotation": [
+      "Domain Loop",
+      "Beer Mile",
+      "Grange Hill",
+      "Maungawhau"
+    ],
     "lookaheadCount": 8,
     "publicHolidays": {
       "2026-06-01": "King's Birthday",
       "2026-10-26": "Labour Day",
-      "2027-01-04": "New Year's Day observed",
-      "2027-01-25": "Auckland Anniversary",
+      "2027-01-04": "Day after New Year's Day observed",
+      "2027-02-01": "Auckland Anniversary",
       "2027-02-08": "Waitangi Day observed",
+      "2027-03-29": "Easter Monday",
       "2027-04-26": "Anzac Day observed",
       "2027-06-07": "King's Birthday",
-      "2027-10-25": "Labour Day"
+      "2027-10-25": "Labour Day",
+      "2028-02-07": "Waitangi Day observed",
+      "2028-04-17": "Easter Monday",
+      "2028-06-05": "King's Birthday",
+      "2028-10-23": "Labour Day"
     },
     "christmasBreak": {
       "startMonth": 12,

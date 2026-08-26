@@ -39,7 +39,8 @@ Route rotation starts from:
 ```json
 "anchorMonday": "2026-06-08",
 "anchorRoute": "Beer Mile",
-"rotation": ["Beer Mile", "Grange Hill", "Maungawhau"]
+"rotation": ["Beer Mile", "Grange Hill", "Maungawhau"],
+"summerRotation": ["Domain Loop", "Beer Mile", "Grange Hill", "Maungawhau"]
 ```
 
 ## Do Not Add For Launch

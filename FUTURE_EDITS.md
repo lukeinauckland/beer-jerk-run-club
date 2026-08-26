@@ -66,30 +66,14 @@ When a Monday matches this list, the generated schedule shifts that run to Tuesd
 Edit:
 
 ```text
-routes
+schedule.rotation
+schedule.summerRotation
 ```
 
-Only routes with:
-
-```json
-"status": "active"
-```
-
-are used in the winter schedule rotation.
-
-Domain is currently:
-
-```json
-"status": "winter-skip"
-```
-
-When Domain returns, change it to:
-
-```json
-"status": "active"
-```
-
-and put the route order back how you want it.
+The winter rotation is Beer Mile, Grange Hill, then Maungawhau. Domain starts
+the summer rotation on the first Monday after daylight saving begins, followed
+by Beer Mile, Grange Hill and Maungawhau. The site removes Domain's winter-skip
+treatment automatically during summer.
 
 ## Change Images
 

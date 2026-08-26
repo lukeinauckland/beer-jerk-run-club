@@ -59,8 +59,9 @@ Primary search intent:
 - Monday run: bag drop from 5pm, run starts 5:40pm sharp.
 - Usual Monday route distance: 5km.
 - Winter Monday route rotation: Beer Mile, Grange Hill, Maungawhau, then repeat.
-- Domain Loop returns when daylight saving returns.
+- Summer Monday route rotation: Domain Loop on the first Monday after daylight saving begins, then Beer Mile, Grange Hill, Maungawhau, then repeat.
 - Public holiday Mondays shift to Tuesday.
+- Christmas closure: no runs from 23 December through 31 January, inclusive, every year.
 - Free. No signup. Just turn up.
 - Runners buy their own drinks.
 - `$10 beers for runners after every run.`

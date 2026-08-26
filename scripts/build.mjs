@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { isChristmasBreakDate, isSummerMonday, routeNameForMonday, shiftedRunForMonday } from './schedule.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
@@ -111,10 +112,7 @@ function withTime(date, time) {
 }
 
 function isChristmasBreak(date) {
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const rule = data.schedule.christmasBreak;
-  return (month === rule.startMonth && day >= rule.startDay) || (month === rule.endMonth && day <= rule.endDay);
+  return isChristmasBreakDate(date, data.schedule.christmasBreak);
 }
 
 function firstSaturday(year, monthIndex) {
@@ -129,21 +127,22 @@ for (const route of data.routes) {
   routeByDisplayOrScheduleName.set(route.name, route);
   routeByDisplayOrScheduleName.set(route.scheduleName || route.name, route);
 }
-const scheduleRouteNames = data.schedule.rotation || activeRoutes.map(route => route.scheduleName || route.name);
-const missingScheduleRoutes = scheduleRouteNames.filter(routeName => !routeByDisplayOrScheduleName.has(routeName));
+const winterRouteNames = data.schedule.rotation || activeRoutes.map(route => route.scheduleName || route.name);
+const summerRouteNames = data.schedule.summerRotation || winterRouteNames;
+const allScheduleRouteNames = [...new Set([...winterRouteNames, ...summerRouteNames])];
+const missingScheduleRoutes = allScheduleRouteNames.filter(routeName => !routeByDisplayOrScheduleName.has(routeName));
 if (missingScheduleRoutes.length) {
-  throw new Error(`Schedule rotation contains unknown routes: ${missingScheduleRoutes.join(', ')}`);
+  throw new Error('Schedule rotations contain unknown routes: ' + missingScheduleRoutes.join(', '));
 }
-const scheduleRoutes = scheduleRouteNames.map(routeName => routeByDisplayOrScheduleName.get(routeName));
-if (!scheduleRoutes.length) {
-  throw new Error('Schedule rotation has no valid routes.');
+const winterRoutes = winterRouteNames.map(routeName => routeByDisplayOrScheduleName.get(routeName));
+const summerRoutes = summerRouteNames.map(routeName => routeByDisplayOrScheduleName.get(routeName));
+const allScheduleRoutes = allScheduleRouteNames.map(routeName => routeByDisplayOrScheduleName.get(routeName));
+if (!winterRoutes.length || !summerRoutes.length) {
+  throw new Error('Schedule rotations must both contain routes.');
 }
-const anchorMonday = parseLocalDate(data.schedule.anchorMonday);
 
 function routeForMonday(monday) {
-  const weeks = Math.round((startOfDay(monday) - anchorMonday) / (7 * 24 * 60 * 60 * 1000));
-  const index = ((weeks % scheduleRoutes.length) + scheduleRoutes.length) % scheduleRoutes.length;
-  return scheduleRoutes[index];
+  return routeByDisplayOrScheduleName.get(routeNameForMonday(monday, data.schedule));
 }
 
 function nextMondayFrom(date) {
@@ -155,16 +154,15 @@ function nextMondayFrom(date) {
 }
 
 function mondayEvent(monday) {
-  const holiday = data.schedule.publicHolidays[dateKey(monday)];
-  const runDate = holiday ? addDays(monday, 1) : monday;
+  const shiftedRun = shiftedRunForMonday(monday, data.schedule.publicHolidays);
   const route = routeForMonday(monday);
   return {
     type: 'monday',
-    date: runDate,
-    sortDate: runDate,
+    date: shiftedRun.date,
+    sortDate: shiftedRun.date,
     route: route.scheduleName || route.name,
     km: route.distance,
-    note: holiday || ''
+    note: shiftedRun.note
   };
 }
 
@@ -1296,8 +1294,9 @@ function faqItems() {
 }
 
 function routeCards() {
+  const summerScheduleActive = isSummerMonday(nextMondayFrom(now));
   return data.routes.map((route, index) => `
-    <article class="route ${route.status === 'winter-skip' ? 'skipped' : ''}">
+    <article class="route ${route.status === 'winter-skip' && !summerScheduleActive ? 'skipped' : ''}" data-route-name="${attr(route.scheduleName || route.name)}">
       <div class="route-info">
         <span class="route-num">- Route ${String(index + 1).padStart(2, '0')}</span>
         <h3 class="route-name">${esc(route.name).replace(' / ', '<br>')}</h3>
@@ -1348,12 +1347,16 @@ function instagramPreview() {
 
 function clientScheduleScript() {
   const scheduleData = {
-    routes: scheduleRoutes.map(route => ({
+    routes: allScheduleRoutes.map(route => ({
       name: route.name,
       scheduleName: route.scheduleName || route.name,
-      distance: route.distance
+      distance: route.distance,
+      status: route.status
     })),
+    winterRotation: winterRouteNames,
+    summerRotation: summerRouteNames,
     anchorMonday: data.schedule.anchorMonday,
+    anchorRoute: data.schedule.anchorRoute,
     runStart: data.schedule.runStart,
     bagDrop: data.schedule.bagDrop,
     lookaheadCount: data.schedule.lookaheadCount,
@@ -1448,11 +1451,51 @@ function clientScheduleScript() {
     var offset = (1 - today.getDay() + 7) % 7;
     return addDays(today, offset);
   }
-  function routeForMonday(monday) {
+  function lastSundayOfSeptember(year) {
+    var date = new Date(year, 8, 30);
+    date.setDate(date.getDate() - date.getDay());
+    return startOfDay(date);
+  }
+  function firstSundayOfApril(year) {
+    var date = new Date(year, 3, 1);
+    date.setDate(date.getDate() + ((7 - date.getDay()) % 7));
+    return startOfDay(date);
+  }
+  function daylightSavingStartMonday(year) {
+    return addDays(lastSundayOfSeptember(year), 1);
+  }
+  function daylightSavingEndMonday(year) {
+    return addDays(firstSundayOfApril(year), 1);
+  }
+  function summerSeasonStartForMonday(monday) {
+    var date = startOfDay(monday);
+    var currentYearStart = daylightSavingStartMonday(date.getFullYear());
+    return date >= currentYearStart ? currentYearStart : daylightSavingStartMonday(date.getFullYear() - 1);
+  }
+  function isSummerMonday(monday) {
+    var date = startOfDay(monday);
+    var start = summerSeasonStartForMonday(date);
+    var end = daylightSavingEndMonday(start.getFullYear() + 1);
+    return date >= start && date < end;
+  }
+  function rotationIndex(value, length) {
+    return ((value % length) + length) % length;
+  }
+  function weeksBetween(start, end) {
+    return Math.round((startOfDay(end) - startOfDay(start)) / (7 * 24 * 60 * 60 * 1000));
+  }
+  function routeNameForMonday(monday) {
+    if (isSummerMonday(monday)) {
+      var summerStart = summerSeasonStartForMonday(monday);
+      return data.summerRotation[rotationIndex(weeksBetween(summerStart, monday), data.summerRotation.length)];
+    }
     var anchor = parseDate(data.anchorMonday);
-    var weeks = Math.round((startOfDay(monday) - anchor) / (7 * 24 * 60 * 60 * 1000));
-    var index = ((weeks % data.routes.length) + data.routes.length) % data.routes.length;
-    return data.routes[index];
+    var anchorIndex = data.winterRotation.indexOf(data.anchorRoute);
+    return data.winterRotation[rotationIndex(anchorIndex + weeksBetween(anchor, monday), data.winterRotation.length)];
+  }
+  function routeForMonday(monday) {
+    var routeName = routeNameForMonday(monday);
+    return data.routes.find(function(route) { return route.scheduleName === routeName; });
   }
   function mondayEvent(monday) {
     var holiday = data.publicHolidays[dateKey(monday)];
@@ -1526,9 +1569,19 @@ function clientScheduleScript() {
       list.innerHTML = scheduleRows(events);
     });
   }
-  var events = buildEvents(aucklandNow());
+  function updateSeasonalRouteCards(now) {
+    var summerScheduleActive = isSummerMonday(nextMondayFrom(now));
+    Array.prototype.forEach.call(document.querySelectorAll('.route[data-route-name]'), function(card) {
+      var routeName = card.getAttribute('data-route-name');
+      var route = data.routes.find(function(item) { return item.scheduleName === routeName; });
+      card.classList.toggle('skipped', route && route.status === 'winter-skip' && !summerScheduleActive);
+    });
+  }
+  var currentTime = aucklandNow();
+  var events = buildEvents(currentTime);
   updateNextRun(events[0]);
   updateSchedules(events);
+  updateSeasonalRouteCards(currentTime);
 })();
 </script>`;
 }
@@ -2237,7 +2290,8 @@ ${data.club.opening}
 - Cost: ${data.club.price}
 - Pace: ${data.club.pace}
 - Runner offer: ${data.club.beerDeal}
-- Winter Monday rotation: ${scheduleRoutes.map(route => route.scheduleName || route.name).join(', ')}
+- Winter Monday rotation: ${winterRoutes.map(route => route.scheduleName || route.name).join(', ')}
+- Summer Monday rotation: ${summerRoutes.map(route => route.scheduleName || route.name).join(', ')}
 - Public holidays: ${data.schedule.publicHolidayRule}
 - AFTERS: ${data.afters.summary} First Saturday of the month, meet ${data.afters.meet}, run ${data.afters.start}
 

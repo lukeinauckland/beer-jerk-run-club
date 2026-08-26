@@ -132,6 +132,13 @@ check('all public pages include Vercel Web Analytics', pageFiles.every(file => {
 check('all public pages include Bing verification', pageFiles.every(file =>
   pageSources[file].includes('<meta name="msvalidate.01" content="78B1B33393FB501253413B2FD38F16F7">')
 ));
+check('all public pages include Google verification', pageFiles.every(file =>
+  pageSources[file].includes('<meta name="google-site-verification" content="UC-KgUE48SNVWyiCzS-H0ECqgS60wDOOdEV0wLKfJN0">')
+));
+check('client schedule includes seasonal rotations',
+  html.includes('"winterRotation":["Beer Mile","Grange Hill","Maungawhau"]')
+  && html.includes('"summerRotation":["Domain Loop","Beer Mile","Grange Hill","Maungawhau"]')
+);
 check('no missing assets', missingAssets.length === 0);
 check('no Meetup in live HTML', !/meetup/i.test(html));
 check('no Half ticket link', !/beer-jerk-run-club-half-marathon-ticket/i.test(html));
