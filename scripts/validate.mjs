@@ -26,6 +26,7 @@ const pageSources = Object.fromEntries(pageFiles.map(file => [file, read(file)])
 const robots = read('robots.txt');
 const sitemap = read('sitemap.xml');
 const llms = read('llms.txt');
+const indexNowKey = read('2f4a574f35a8ce3c310c43ca0506369f.txt');
 const facts = JSON.parse(read('facts.json'));
 const manifest = JSON.parse(read('site.webmanifest'));
 const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
@@ -62,6 +63,7 @@ check('styles.css exists', fs.existsSync(path.join(dist, 'styles.css')));
 check('robots.txt exists', fs.existsSync(path.join(dist, 'robots.txt')));
 check('sitemap.xml exists', fs.existsSync(path.join(dist, 'sitemap.xml')));
 check('llms.txt exists', fs.existsSync(path.join(dist, 'llms.txt')));
+check('IndexNow key file is exact', indexNowKey === '2f4a574f35a8ce3c310c43ca0506369f');
 check('facts.json exists', fs.existsSync(path.join(dist, 'facts.json')));
 check('site.webmanifest exists', fs.existsSync(path.join(dist, 'site.webmanifest')));
 check('favicon exists', fs.existsSync(path.join(dist, 'favicon-32.png')));

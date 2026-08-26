@@ -90,6 +90,18 @@ local-preview/index.html
 
 Use `dist/` for deployment. `local-preview/` is only for checking the site without a server.
 
+## IndexNow
+
+The shared IndexNow key is `2f4a574f35a8ce3c310c43ca0506369f`. Its source file is `public/2f4a574f35a8ce3c310c43ca0506369f.txt` and it is served at `https://beerjerkrunclub.co.nz/2f4a574f35a8ce3c310c43ca0506369f.txt`.
+
+Resubmit all sitemap URLs with:
+
+```sh
+curl -X POST https://api.indexnow.org/indexnow \
+  -H 'Content-Type: application/json' \
+  -d '{"host":"beerjerkrunclub.co.nz","key":"2f4a574f35a8ce3c310c43ca0506369f","keyLocation":"https://beerjerkrunclub.co.nz/2f4a574f35a8ce3c310c43ca0506369f.txt","urlList":["https://beerjerkrunclub.co.nz/","https://beerjerkrunclub.co.nz/new-runners","https://beerjerkrunclub.co.nz/schedule","https://beerjerkrunclub.co.nz/routes","https://beerjerkrunclub.co.nz/afters"]}'
+```
+
 ## Deploy On Vercel
 
 Recommended path:

@@ -37,6 +37,12 @@
       ]
     },
     {
+      "source": "/2f4a574f35a8ce3c310c43ca0506369f.txt",
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" }
+      ]
+    },
+    {
       "source": "/sitemap.xml",
       "headers": [
         { "key": "Content-Type", "value": "application/xml; charset=utf-8" }
