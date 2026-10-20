@@ -22,3 +22,15 @@ jobs:
             exit 1
           fi
           curl --fail --silent --show-error --request POST "$VERCEL_DEPLOY_HOOK_URL"
+
+  keepalive:
+    # GitHub disables scheduled workflows after 60 days without repo activity.
+    # Re-enabling the workflow via the API resets that timer without a commit.
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Reset inactivity timer
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method PUT "repos/${{ github.repository }}/actions/workflows/refresh-schedule.yml/enable"
